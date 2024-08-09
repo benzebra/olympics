@@ -1,4 +1,4 @@
-### Olimpycs
+### Olympics
 This is the officil git repo of 2024 Computer Graphics project made by Filippo Brajucha during the CG course at University of Bologna.
 
 ## The idea
