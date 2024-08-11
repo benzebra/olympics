@@ -21,9 +21,12 @@ function main() {
 		return;
 	}
 
-	//mesh.sourceMesh = 'resources/obj/torch/torch.obj';
-    mesh.sourceMesh = 'resources/obj/olympics-torch/source/TO SUBSTANCE .obj';
+	// mesh.sourceMesh = 'resources/obj/torch/torch.obj';
+    //mesh.sourceMesh = 'resources/obj/olympics-torch/source/TO SUBSTANCE .obj';
     //mesh.sourceMesh = 'resources/obj/soccerball/soccerball.obj';
+	// mesh.sourceMesh = 'resources/obj/girl/Sport_girl.obj';
+	//mesh.sourceMesh = 'resources/obj/Painter1/Shoes--HH-A1.obj';
+	mesh.sourceMesh = 'resources/obj/logo/model.obj';
 	LoadMesh(gl,mesh);
 	//console.log(mesh);
 
