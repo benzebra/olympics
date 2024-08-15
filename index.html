@@ -5,17 +5,35 @@
 		
 		<style>
 			#canvas{
-				border: 3px solid black;
-				margin: 200px;
+				border: 4px solid black;
+			}
+			#title{
+				border: 2px solid green;
+			}
+			#body{
+				border: 2px solid red;
+			}
+			#canvas-div{
+				border: 3px solid yellow;
 			}
 		</style>
     </head>
 
-	<body class="text-center" >
-		<p class="text-center display-1"> Olympics 3D </p>
-		<p class="text-center display-1"> Paris 2024 </p>
+	<body id="body" class="container px-auto text-center">
 
-		<canvas id="canvas" width="600" height="600"></canvas>
+		<p class="display-1" id="title"> Olympics 3D Paris 2024 </p>
+
+		<div id="canvas-div" class="container">
+			<canvas class="w-100" id="my-canvas"></canvas>
+		</div>
+		<!-- <div id="canvas-div" class="container">
+			<canvas class="w-100" id="canvas"></canvas>
+		</div> -->
+
+		<div class="d-grid gap-2 col-6 mx-auto">
+			<button class="btn btn-secondary" type="button">Button</button>
+		</div>
+
 	</body>
 
 	<!-- vertex shader -->
@@ -91,4 +109,12 @@
 	<script type="text/javascript" src="resources/lib/load_mesh.js"></script>
 	
 	<script type="text/javascript" src="script.js"></script>
+
+
+	<!-- <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+	<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+	<sc_ript src="https://webglfundamentals.org/webgl/resources/m3.js"></script>
+	<script type="text/javascript" src="test.js"></script> -->
+	
+
 </html>
