@@ -12,21 +12,23 @@ var emissive;  //Ke
 var shininess; //Ns
 var opacity;   //Ni
 
-function main() {
-	var canvas = document.getElementById("my-canvas");
-	var gl = canvas.getContext("webgl");
-	if (!gl) {
-		return;
-	}
-	console.log(mesh)
+// add other specs (movement, light ecc)
+
+function render(value, gl) {
+	// var canvas = document.getElementById("my-canvas");
+	// var gl = canvas.getContext("webgl");
+	// if (!gl) {
+	// 	return;
+	// }
 	// mesh.sourceMesh = 'resources/obj/torch/torch.obj';
     //mesh.sourceMesh = 'resources/obj/olympics-torch/source/TO SUBSTANCE .obj';
     // mesh.sourceMesh = 'resources/obj/soccerball/soccerball.obj';
 	// mesh.sourceMesh = 'resources/obj/girl/Sport_girl.obj';
 	// mesh.sourceMesh = 'resources/obj/Painter1/Shoes--HH-A1.obj';
-	mesh.sourceMesh = 'resources/obj/logo/model.obj';
+	// mesh.sourceMesh = 'resources/obj/logo/model.obj';
 	// mesh.sourceMesh = 'resources/obj/lady/Ledy_Sport.obj';
 	// mesh.sourceMesh = 'resources/obj/chair/chair.obj';
+	mesh.sourceMesh = value;
 	console.log(mesh)
 	LoadMesh(gl, mesh);
 	//console.log(mesh);
@@ -193,5 +195,3 @@ function main() {
 		requestAnimationFrame(drawScene);
 	}
 }
-
-main();
