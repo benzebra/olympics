@@ -1,9 +1,9 @@
-var srcImages = []
-var figures = ["swim", "sword", "kayak", "windsurf"];
+var srcImages = ["resources/img/kayak.avif", "resources/img/kayak.avif", "resources/img/kayak.avif", "resources/img/tennis.avif"];
+var figures = ["swim", "sword", "kayak", "tennis"];
 var gl;
 
 document.addEventListener('DOMContentLoaded', function() {
-    var canvas = document.getElementById("sport-canvas");
+    var canvas = document.getElementById("my-canvas");
 	gl = canvas.getContext("webgl");
 	if (!gl) {
 		return;
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // attach to each td element a link to google
     tdArray = document.getElementsByTagName("td");
     for(var i=0; i<tdArray.length; i++) {
-        innerText = "<img src=" + srcImages[i] + " onclick=imgClick('" + figures[i] + "') >";
+        innerText = "<img class='img-thumbnail' src=" + srcImages[i] + " onclick=imgClick('" + figures[i] + "') href=#canvas-div\>";
         console.log(innerText);
         tdArray[i].innerHTML = innerText;
     }
@@ -31,11 +31,13 @@ function imgClick(text) {
         case "kayak":
             value = 'resources/obj/kayak/30daysinVRkayak.obj';
             break;
-        case "windsurf":
-            value = 'resources/obj/windsurf/Windsurf.obj';
+        case "tennis":
+            // value = 'resources/obj/tennis/Ball_1H.obj';
+            value = 'resources/obj/tennis-racket/06-12-19_tennis_racket_export_v1.obj';
             break;
     }
 
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     render(value, gl);
 }
 
