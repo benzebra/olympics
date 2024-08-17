@@ -13,10 +13,21 @@ var shininess; //Ns
 var opacity;   //Ni
 
 var flag = false;
+var dr = 5.0 * Math.PI/180.0;
+
+// var controls = {
+// 	near : 1,
+// 	far : 100,
+// 	d : 8.5,
+// 	fov : 40.0,  
+// 	theta_light : degToRad(20),
+// 	phi_light  : degToRad(80),
+// 	d_light : 8.5,
+// };
 
 // add other specs (movement, light ecc)
 
-function render(value, gl) {
+function render(value, gl, specs, newRender) {
 	if(flag) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
@@ -25,10 +36,25 @@ function render(value, gl) {
 		normals 	= [];
 		texcoords 	= [];
 		numVertices = null;
+
+		resetControls();
+	}else{
+		// var gui = new dat.GUI()
+
+		// gui.add(controls, "near", 			1,		10, 	1);
+		// gui.add(controls, "far", 			1, 		100, 	1);
+		// gui.add(controls, "d", 				0, 		10, 	1);
+		// gui.add(controls, "fov", 			10, 	120, 	5);
+		// gui.add(controls, "theta_light", 	1, 		6.28, 	dr);
+		// gui.add(controls, "phi_light", 		1, 		10, 	dr);
+		// gui.add(controls, "d_light", 		1.75, 	10, 	1);
+	}
+
+	if(newRender){
+		mesh.sourceMesh = value;
+		LoadMesh(gl, mesh);
 	}
 	
-	mesh.sourceMesh = value;
-	LoadMesh(gl, mesh);
 
 	// setup GLSL program
 	var program = webglUtils.createProgramFromScripts(gl, ["3d-vertex-shader", "3d-fragment-shader"]);
@@ -53,7 +79,6 @@ function render(value, gl) {
 	// provide texture coordinates
 	var texcoordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-	// Set Texcoords
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
 
 	var ambientLight = [ 0, 0, 0 ];
@@ -70,27 +95,24 @@ function render(value, gl) {
 	gl.uniform1f(gl.getUniformLocation(program, "shininess"), shininess);
 	gl.uniform1f(gl.getUniformLocation(program, "opacity"), opacity);
 
-	// Turn on the position attribute
+	// Turn on the position attribute and bind the position buffer
 	gl.enableVertexAttribArray(positionLocation);
-	// Bind the position buffer.
 	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 	// Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-	var size = 3;          // 3 components per iteration
-	var type = gl.FLOAT;   // the data is 32bit floats
-	var normalize = false; // don't normalize the data
-	var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-	var offset = 0;        // start at the beginning of the buffer
+	var size = 3;          		// 3 components per iteration
+	var type = gl.FLOAT;   		// the data is 32bit floats
+	var normalize = false; 		// don't normalize the data
+	var stride = 0;        		// 0 = move forward size * sizeof(type) each iteration to get the next position
+	var offset = 0;        		// start at the beginning of the buffer
 	gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset);
 
-	// Turn on the normal attribute
+	// Turn on the normal attribute and bind the normal buffer
 	gl.enableVertexAttribArray(normalLocation);
-	// Bind the normal buffer.
 	gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
 	gl.vertexAttribPointer(normalLocation, size, type, normalize, stride, offset);
 
-	// Turn on the texcord attribute
+	// Turn on the texcord attribute and bind the position buffer
 	gl.enableVertexAttribArray(texcoordLocation);
-	// Bind the position buffer.
 	gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
 	// Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
 	size = 2;          // 2 components per iteration
@@ -100,18 +122,36 @@ function render(value, gl) {
 	var modelXRotationRadians 	= degToRad(0);
 	var modelYRotationRadians 	= degToRad(0);
 
-	var radius = 3.50;
+	// define the radius of the sphere that contains the object in order to center the camera
+	var range = m4.subtractVectors(getExtents().max, getExtents().min);
+	var radius = m4.length(range) * 1.5;
 
 	// Compute the projection matrix
+	// var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+	// var zmin = radius/100;
+	// var zmax = radius*3;
+	// var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zmin, zmax);
 	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-	var zmin = radius/100;
-	var zmax = radius*3;
-	var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zmin, zmax);
-	
+	var FOV = specs.fov;
+	var NEAR = specs.near;
+	var FAR = specs.far;
+	var projectionMatrix = m4.perspective(degToRad(FOV), aspect, NEAR, FAR);
+	console.log(projectionMatrix);
 
-	var cameraPosition = [0, 0, 1.5 * radius];
-	var up = [0, 1, 0];
+	// var cameraPosition = [0, 0, 1.5 * radius];
+	// var up = [0, 1, 0];
+	// var target = [0, 0, 0];
+	var up = [0, 0, 1];
+	var D = specs.d;
+	var PHI = degToRad(80)
+	var THETA = degToRad(20);
+	var cameraPosition = [
+		D*Math.sin(PHI)*Math.cos(THETA),
+		D*Math.sin(PHI)*Math.sin(THETA),
+		D*Math.cos(PHI)
+	]
 	var target = [0, 0, 0];
+	console.log(cameraPosition);
 
 	// Compute the camera's matrix using look at.
 	var cameraMatrix = m4.lookAt(cameraPosition, target, up);
@@ -188,3 +228,32 @@ function render(value, gl) {
 		requestAnimationFrame(drawScene);
 	}
 }
+
+function getExtents() {
+	const min = positions.slice(0, 3);
+	const max = positions.slice(0, 3);
+	for (let i = 3; i < positions.length; i += 3) {
+		for (let j = 0; j < 3; ++j) {
+			const v = positions[i + j];
+			min[j] = Math.min(v, min[j]);
+			max[j] = Math.max(v, max[j]);
+		}
+	}
+
+	return {min, max};
+}
+
+function resetControls(){
+	controls = {
+		near : 1,
+		far : 100,
+		d : 8.5,
+		fov : 40.0,  
+		theta_light : degToRad(20),
+		phi_light  : degToRad(80),
+		d_light : 8.5,
+	}
+}
+
+function degToRad(d) { return d * Math.PI / 180; }
+function radToDeg(r) { return r * 180 / Math.PI; }
