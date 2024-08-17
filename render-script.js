@@ -12,26 +12,23 @@ var emissive;  //Ke
 var shininess; //Ns
 var opacity;   //Ni
 
+var flag = false;
+
 // add other specs (movement, light ecc)
 
 function render(value, gl) {
-	// var canvas = document.getElementById("my-canvas");
-	// var gl = canvas.getContext("webgl");
-	// if (!gl) {
-	// 	return;
-	// }
-	// mesh.sourceMesh = 'resources/obj/torch/torch.obj';
-    //mesh.sourceMesh = 'resources/obj/olympics-torch/source/TO SUBSTANCE .obj';
-    // mesh.sourceMesh = 'resources/obj/soccerball/soccerball.obj';
-	// mesh.sourceMesh = 'resources/obj/girl/Sport_girl.obj';
-	// mesh.sourceMesh = 'resources/obj/Painter1/Shoes--HH-A1.obj';
-	// mesh.sourceMesh = 'resources/obj/logo/model.obj';
-	// mesh.sourceMesh = 'resources/obj/lady/Ledy_Sport.obj';
-	// mesh.sourceMesh = 'resources/obj/chair/chair.obj';
+	if(flag) {
+		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+		mesh 		= new Array();
+		positions 	= [];
+		normals 	= [];
+		texcoords 	= [];
+		numVertices = null;
+	}
+	
 	mesh.sourceMesh = value;
-	console.log(mesh)
 	LoadMesh(gl, mesh);
-	//console.log(mesh);
 
 	// setup GLSL program
 	var program = webglUtils.createProgramFromScripts(gl, ["3d-vertex-shader", "3d-fragment-shader"]);
@@ -99,22 +96,17 @@ function render(value, gl) {
 	size = 2;          // 2 components per iteration
 	gl.vertexAttribPointer(texcoordLocation, size, type, normalize, stride, offset);
 
-	var fieldOfViewRadians = degToRad(30);
-	var modelXRotationRadians = degToRad(0);
-	var modelYRotationRadians = degToRad(0);
+	var fieldOfViewRadians 		= degToRad(30);
+	var modelXRotationRadians 	= degToRad(0);
+	var modelYRotationRadians 	= degToRad(0);
 
 	var radius = 3.50;
 
 	// Compute the projection matrix
 	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-	//  zmin=0.125;
-	// var zmin = 0.1;
 	var zmin = radius/100;
 	var zmax = radius*3;
 	var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zmin, zmax);
-
-	// var extents = getGeometriesExtents(obj.geometries);
-	// var range = m4.subtractVectors(extents.max, extents.min);
 	
 
 	var cameraPosition = [0, 0, 1.5 * radius];
@@ -159,6 +151,7 @@ function render(value, gl) {
 
 	// Draw the scene.
 	function drawScene(time) {
+		flag = true;
 
 		webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
