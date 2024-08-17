@@ -1,9 +1,13 @@
 "use strict";
 
-var mesh = new Array();
-var positions = [];
-var normals = [];
-var texcoords = [];
+// var mesh = new Array();
+// var positions = [];
+// var normals = [];
+// var texcoords = [];
+var mesh;
+var positions;
+var normals;
+var texcoords;
 var numVertices;
 var ambient;   //Ka
 var diffuse;   //Kd
@@ -12,23 +16,83 @@ var emissive;  //Ke
 var shininess; //Ns
 var opacity;   //Ni
 
+var matrix
+
 var flag = false;
 var dr = 5.0 * Math.PI/180.0;
 
-// var controls = {
-// 	near : 1,
-// 	far : 100,
-// 	d : 8.5,
-// 	fov : 40.0,  
-// 	theta_light : degToRad(20),
-// 	phi_light  : degToRad(80),
-// 	d_light : 8.5,
-// };
+var program;
+
+const vs = `
+	attribute vec4 a_position;
+	attribute vec3 a_normal;
+	attribute vec2 a_texcoord;
+
+	uniform mat4 u_projection;
+	uniform mat4 u_view;
+	uniform mat4 u_world;
+	uniform vec3 u_viewWorldPosition;
+
+	varying vec3 v_normal;
+	varying vec3 v_surfaceToView;
+	varying vec2 v_texcoord;
+
+	void main() {
+		vec4 worldPosition = u_world * a_position;
+		gl_Position = u_projection * u_view * worldPosition;
+		v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
+		v_normal = mat3(u_world) * a_normal;
+		v_texcoord = a_texcoord;
+	}
+`;
+
+const fs = `
+	precision highp float;
+
+	varying vec3 v_normal;
+	varying vec3 v_surfaceToView;
+	varying vec2 v_texcoord;
+
+	uniform vec3 diffuse;
+	uniform vec3 ambient;
+	uniform vec3 emissive;
+	uniform vec3 specular;
+	uniform float shininess;
+	uniform float opacity;
+	uniform vec3 u_lightDirection;
+	uniform vec3 u_ambientLight;
+	uniform vec3 u_colorLight;
+	uniform sampler2D diffuseMap;
+
+	void main () {
+		vec3 normal = normalize(v_normal);
+
+		vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+		vec3 halfVector = normalize(u_lightDirection + surfaceToViewDirection);
+
+		float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
+		float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
+
+		vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
+		vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * u_colorLight.rgb;
+		float effectiveOpacity = opacity * diffuseMapColor.a;
+
+		gl_FragColor = vec4(
+			emissive +
+			ambient * u_ambientLight +
+			effectiveDiffuse * fakeLight +
+			specular * pow(specularLight, shininess),
+			effectiveOpacity);
+	}
+`;
 
 // add other specs (movement, light ecc)
 
 function render(value, gl, specs, newRender) {
-	if(flag) {
+	
+	program = webglUtils.createProgramFromScripts(gl, ["3d-vertex-shader", "3d-fragment-shader"]);
+	
+	if(newRender) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
 		mesh 		= new Array();
@@ -38,28 +102,17 @@ function render(value, gl, specs, newRender) {
 		numVertices = null;
 
 		resetControls();
-	}else{
-		// var gui = new dat.GUI()
 
-		// gui.add(controls, "near", 			1,		10, 	1);
-		// gui.add(controls, "far", 			1, 		100, 	1);
-		// gui.add(controls, "d", 				0, 		10, 	1);
-		// gui.add(controls, "fov", 			10, 	120, 	5);
-		// gui.add(controls, "theta_light", 	1, 		6.28, 	dr);
-		// gui.add(controls, "phi_light", 		1, 		10, 	dr);
-		// gui.add(controls, "d_light", 		1.75, 	10, 	1);
-	}
-
-	if(newRender){
 		mesh.sourceMesh = value;
 		LoadMesh(gl, mesh);
+
+		gl.useProgram(program);
 	}
 	
-
-	// setup GLSL program
-	var program = webglUtils.createProgramFromScripts(gl, ["3d-vertex-shader", "3d-fragment-shader"]);
+	staticRender(gl, specs);
+		
 	// Tell it to use our program (pair of shaders)
-	gl.useProgram(program);
+	console.log(program)
 
 	// look up where the vertex data needs to go.
 	var positionLocation = gl.getAttribLocation(program, "a_position");
@@ -146,9 +199,9 @@ function render(value, gl, specs, newRender) {
 	var PHI = degToRad(80)
 	var THETA = degToRad(20);
 	var cameraPosition = [
-		D*Math.sin(PHI)*Math.cos(THETA),
-		D*Math.sin(PHI)*Math.sin(THETA),
-		D*Math.cos(PHI)
+		D * Math.sin(PHI) * Math.cos(THETA),
+		D * Math.sin(PHI) * Math.sin(THETA),
+		D * Math.cos(PHI)
 	]
 	var target = [0, 0, 0];
 	console.log(cameraPosition);
@@ -159,7 +212,7 @@ function render(value, gl, specs, newRender) {
 	// Make a view matrix from the camera matrix.
 	var viewMatrix = m4.inverse(cameraMatrix);
 
-	var matrixLocation 				= gl.getUniformLocation(program, "u_world");
+	// var matrixLocation 				= gl.getUniformLocation(meshProgram.program, "u_world");
 	var textureLocation 			= gl.getUniformLocation(program, "diffuseMap");
 	var viewMatrixLocation 			= gl.getUniformLocation(program, "u_view");
 	var projectionMatrixLocation 	= gl.getUniformLocation(program, "u_projection");
@@ -168,7 +221,7 @@ function render(value, gl, specs, newRender) {
 
 	gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
 	gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix);
-			
+	
 	// set the light position
 	gl.uniform3fv(lightWorldDirectionLocation, m4.normalize([-1, 3, 5]));
 
@@ -185,48 +238,7 @@ function render(value, gl, specs, newRender) {
 	function degToRad(d) { return d * Math.PI / 180; }
 
 	// Get the starting time.
-	var then = 0;
-
-	requestAnimationFrame(drawScene);
-
-	// Draw the scene.
-	function drawScene(time) {
-		flag = true;
-
-		webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-
-		// convert to seconds
-		time *= 0.001;
-		// Subtract the previous time from the current time
-		var deltaTime = time - then;
-		// Remember the current time for the next frame.
-		then = time;
-
-		// Tell WebGL how to convert from clip space to pixels
-		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-		//gl.enable(gl.CULL_FACE);
-		gl.enable(gl.DEPTH_TEST);
-
-		// Animate the rotation
-		modelYRotationRadians += -0.5 * deltaTime;
-		modelXRotationRadians += -0.4 * deltaTime;
-
-		// Clear the canvas AND the depth buffer.
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-		var matrix = m4.identity();
-		matrix = m4.xRotate(matrix, modelXRotationRadians);
-		matrix = m4.yRotate(matrix, modelYRotationRadians);
-
-		// Set the matrix.
-		gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-		// Draw the geometry.
-		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
-
-		requestAnimationFrame(drawScene);
-	}
+	
 }
 
 function getExtents() {
@@ -253,6 +265,140 @@ function resetControls(){
 		phi_light  : degToRad(80),
 		d_light : 8.5,
 	}
+}
+
+function animationRender(){
+	if(flag){
+		// stop it
+		return;
+	}
+	console.log("clicked");
+
+	var matrixLocation 				= gl.getUniformLocation(program, "u_world");
+	var textureLocation 			= gl.getUniformLocation(program, "diffuseMap");
+	var viewMatrixLocation 			= gl.getUniformLocation(program, "u_view");
+	var projectionMatrixLocation 	= gl.getUniformLocation(program, "u_projection");
+	var lightWorldDirectionLocation = gl.getUniformLocation(program, "u_lightDirection");
+	var viewWorldPositionLocation 	= gl.getUniformLocation(program, "u_viewWorldPosition");
+
+	var modelXRotationRadians 	= degToRad(0);
+	var modelYRotationRadians 	= degToRad(0);
+
+	var then = 0;
+
+	requestAnimationFrame(drawScene);
+
+	// Draw the scene.
+	function drawScene(time) {
+		flag = true;
+		// flag = true;
+
+		webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+		// convert to seconds
+		time *= 0.001;
+		// Subtract the previous time from the current time
+		var deltaTime = time - then;
+		// Remember the current time for the next frame.
+		then = time;
+
+		// Tell WebGL how to convert from clip space to pixels
+		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+		//gl.enable(gl.CULL_FACE);
+		gl.enable(gl.DEPTH_TEST);
+
+		// Animate the rotation
+		modelYRotationRadians += -0.5 * deltaTime;
+		modelXRotationRadians += -0.4 * deltaTime;
+
+		// Clear the canvas AND the depth buffer.
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		matrix = m4.identity();
+		matrix = m4.xRotate(matrix, modelXRotationRadians);
+		matrix = m4.yRotate(matrix, modelYRotationRadians);
+
+		// Set the matrix.
+		gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+		// Draw the geometry.
+		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+
+		requestAnimationFrame(drawScene);
+	}
+}
+
+function staticRender(gl, specs){
+
+	//usa libreria m4.js per definire proj_matrix e view_matrix
+	var proj_matrix = m4.perspective(degToRad(fov), aspect, near, far);
+
+	var camera = [D*Math.sin(PHI)*Math.cos(THETA),
+				D*Math.sin(PHI)*Math.sin(THETA),
+				D*Math.cos(PHI)];
+	var view_matrix = m4.inverse(m4.lookAt(camera, target, up));
+
+	var mo_matrix=[
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		0,0,0,1];
+
+	var light = [d*Math.sin(phi)*Math.cos(theta),
+		d*Math.sin(phi)*Math.sin(theta),
+		d*Math.cos(phi), 1];
+
+	gl.enable(gl.DEPTH_TEST);
+	// gl.depthFunc(gl.LEQUAL); 
+	gl.clearColor(1.0, 1.0, 1.0, 1); 
+
+	gl.clearDepth(1.0);
+	gl.viewport(0.0, 0.0, canvas.width, canvas.height); 
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.uniformMatrix4fv(_Pmatrix, false, proj_matrix); 
+	gl.uniformMatrix4fv(_Vmatrix, false, view_matrix); 
+	gl.uniformMatrix4fv(_Mmatrix, false, mo_matrix);
+
+	//Cubo a facce
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+	gl.vertexAttribPointer(_position, 3, gl.FLOAT, false,0,0); 
+	gl.enableVertexAttribArray(_position);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+	gl.vertexAttribPointer(_color, 3, gl.FLOAT, false,0,0) ; 
+	gl.enableVertexAttribArray(_color);
+
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+	gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+	//Cubo a linee
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer2);
+	gl.vertexAttribPointer(_position, 3, gl.FLOAT, false,0,0); 
+	gl.enableVertexAttribArray(_position);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer2);
+	gl.vertexAttribPointer(_color, 3, gl.FLOAT, false,0,0) ; 
+	gl.enableVertexAttribArray(_color);
+
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer2);
+	gl.drawElements(gl.LINES, indices2.length, gl.UNSIGNED_SHORT, 0);
+
+	//matrice di proiezione del cubo sul piano di appoggio
+	Crea_Matrice_Ombra (plane_vertex, plane_normal, light)
+	gl.uniformMatrix4fv(_Mmatrix, false, mo_matrix2);
+
+	//Cubo a facce
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+	gl.vertexAttribPointer(_position, 3, gl.FLOAT, false,0,0); 
+	gl.enableVertexAttribArray(_position);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer_shadow);
+	gl.vertexAttribPointer(_color, 3, gl.FLOAT, false,0,0) ; 
+	gl.enableVertexAttribArray(_color);
+
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+	gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 }
 
 function degToRad(d) { return d * Math.PI / 180; }

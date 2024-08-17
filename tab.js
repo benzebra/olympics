@@ -21,10 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		return;
 	}
 
-    value = " "
-
     gui = new dat.GUI();
-    gui.add(controls, "near", 			1,		10, 	1).onChange(function() {console.log(value); render(value, gl, controls, false)});
+    gui.add(controls, "near", 			1,		10, 	1).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "far", 			1, 		100, 	1).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "d", 				0, 		10, 	1).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "fov", 			10, 	120, 	5).onChange(function() {render(value, gl, controls, false)});
@@ -59,5 +57,3 @@ function imgClick(text) {
 
     render(value, gl, controls, true);
 }
-
-
