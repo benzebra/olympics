@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     gui.add(controls, "far", 			1, 		100, 	1).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "d", 				0, 		10, 	1).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "fov", 			10, 	120, 	5).onChange(function() {render(value, gl, controls, false)});
-    gui.add(controls, "theta_light", 	1, 		6.28, 	dr).onChange(function() {render(value, gl, controls, false)});
-    gui.add(controls, "phi_light", 		1, 		10, 	dr).onChange(function() {render(value, gl, controls, false)});
+    // gui.add(controls, "theta_light", 	1, 		6.28, 	dr).onChange(function() {render(value, gl, controls, false)});
+    // gui.add(controls, "phi_light", 		1, 		10, 	dr).onChange(function() {render(value, gl, controls, false)});
     gui.add(controls, "d_light", 		1.75, 	10, 	1).onChange(function() {render(value, gl, controls, false)});
 
     // attach to each td element a link to google
@@ -55,5 +55,6 @@ function imgClick(text) {
             break;
     }
 
-    render(value, gl, controls, true);
+    render(value, gl);
+    // render(value, gl, controls, true);
 }
