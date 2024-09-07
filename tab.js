@@ -2,7 +2,10 @@ var srcImages = [
     "resources/img/sword.avif", 
     "resources/img/volley.avif", 
     "resources/img/kayak.avif", 
-    "resources/img/tennis.avif"];
+    "resources/img/tennis.avif",
+    "resources/img/cycling.avif",
+    "resources/img/shooting.avif"
+];
 
 var figures = [
     "sword", 
