@@ -42,11 +42,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // gui.add(controls, "d_light", 		1.75, 	10, 	1).onChange(function() {render(value, gl, controls, false)});
 
     // attach to each td element a link to google
-    tdArray = document.getElementsByTagName("td");
+    // tdArray = document.getElementsByTagName("td");
+    // for(var i=0; i<tdArray.length; i++) {
+    //     innerText = "<img class='img-thumbnail border-0' src=" + srcImages[i] + " onclick=imgClick('" + figures[i] + "') href=#canvas-div\>";
+    //     console.log(innerText);
+    //     tdArray[i].innerHTML = innerText;
+    // }
+    tdArray = document.getElementsByTagName("li");
+    tdArray = document.getElementsByName("dropdown-element");
     for(var i=0; i<tdArray.length; i++) {
-        innerText = "<img class='img-thumbnail' src=" + srcImages[i] + " onclick=imgClick('" + figures[i] + "') href=#canvas-div\>";
+        innerText = "<img class='img-thumbnail border-0' src=" + srcImages[i] + " onclick=imgClick('" + figures[i] + "') href=#canvas-div\>";
         console.log(innerText);
-        tdArray[i].innerHTML = innerText;
+        tdArray[i].innerHTML = innerText + tdArray[i].innerHTML;
     }
 });
 
@@ -62,7 +69,7 @@ function imgClick(text) {
             objHref = 'resources/obj/kayak/30daysinVRkayak.obj';
             break;
         case "tennis":
-            objHref = 'resources/obj/tennis2/tennis.obj';
+            objHref = 'resources/obj/tennis/Ball_1H.obj';
             break;
     }
 

@@ -4,6 +4,19 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 		<style>
+			@font-face {
+				font-family: 'MyFontFamily';
+				src: url(resources/Paris2024-Variable.ttf) format('truetype');
+			}
+			
+			body{ font-family: 'MyFontFamily'; }
+			
+			a{ color: black; }
+
+			footer{
+				position: sticky;
+				bottom: 0;
+			}
 		</style>
     </head>
 
@@ -15,8 +28,8 @@
 			<canvas class="w-100" id="my-canvas"></canvas>
 		</div>
 
-		<div class="d-grid gap-2 col-6 mx-auto">
-			<a class="btn btn-secondary" type="button" href="tab.html"> GO TO TAB </a>
+		<div class="d-grid gap-2 col-6 mx-auto" id="footer">
+			<a class="display-5" type="button" href="tab.html"> GO TO TAB </a>
 		</div>
 
 	</body>
