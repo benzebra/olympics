@@ -1,0 +1,17 @@
+# 123DMake material file.
+# File Created : Sat Aug 10 16:45:29 2019
+
+newmtl cardboardSurface
+illum 1
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+map_Kd cardboardSurface.png
+map_Ka cardboardSurface.png
+newmtl cardboardSide
+illum 1
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+map_Kd cardboardSide.png
+map_Ka cardboardSide.png

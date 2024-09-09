@@ -1,17 +1,19 @@
 var srcImages = [
-    "resources/img/sword.avif", 
-    "resources/img/volley.avif", 
-    "resources/img/kayak.avif", 
-    "resources/img/tennis.avif",
-    "resources/img/cycling.avif",
-    "resources/img/shooting.avif"
+    "/img/sword.avif", 
+    "/img/volley.avif", 
+    "/img/kayak.avif", 
+    "/img/tennis.avif",
+    "/img/cycling.avif",
+    "/img/shooting.avif"
 ];
 
 var figures = [
     "sword", 
-    "volleyball", 
+    "volley", 
     "kayak", 
-    "tennis"
+    "tennis",
+    "cycling",
+    "shooting"
 ];
 
 var gl;
@@ -63,16 +65,22 @@ document.addEventListener('DOMContentLoaded', function() {
 function imgClick(text) {
     switch(text){
         case "sword":
-            objHref = 'resources/obj/logo/model.obj';
+            objHref = 'resources/obj/sword/sword.obj';
             break;
-        case "volleyball":
-            objHref = 'resources/obj/logo_2024/logo.obj';
+        case "volley":
+            objHref = 'resources/obj/volley/volley.obj';
             break;
         case "kayak":
             objHref = 'resources/obj/kayak/30daysinVRkayak.obj';
             break;
         case "tennis":
-            objHref = 'resources/obj/tennis/Ball_1H.obj';
+            objHref = 'resources/obj/tennis_racket/tennis_racket.obj';
+            break;
+        case "cycling":
+            objHref = 'resources/obj/bike/bike.obj';
+            break;
+        case "shooting":
+            objHref = 'resources/obj/shotgun/shotgun.obj';
             break;
     }
 
