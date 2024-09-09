@@ -65,22 +65,22 @@ document.addEventListener('DOMContentLoaded', function() {
 function imgClick(text) {
     switch(text){
         case "sword":
-            objHref = 'resources/obj/sword/sword.obj';
+            objHref = '/obj/sword/sword.obj';
             break;
         case "volley":
-            objHref = 'resources/obj/volley/volley.obj';
+            objHref = '/obj/volley/volley.obj';
             break;
         case "kayak":
-            objHref = 'resources/obj/kayak/30daysinVRkayak.obj';
+            objHref = '/obj/kayak/30daysinVRkayak.obj';
             break;
         case "tennis":
-            objHref = 'resources/obj/tennis_racket/tennis_racket.obj';
+            objHref = '/obj/tennis_racket/tennis_racket.obj';
             break;
         case "cycling":
-            objHref = 'resources/obj/bike/bike.obj';
+            objHref = '/obj/bike/bike.obj';
             break;
         case "shooting":
-            objHref = 'resources/obj/shotgun/shotgun.obj';
+            objHref = '/obj/shotgun/shotgun.obj';
             break;
     }
 

@@ -1,6 +1,6 @@
 "use strict";
 
-var objHref = 'resources/obj/logo_2024/logo.obj';
+var objHref = 'obj/logo_2024/logo.obj';
 var materials = {};
 var parts = [];
 var extents = {};
