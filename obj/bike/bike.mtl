@@ -70,7 +70,7 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd seta_stitches_baseColor.jpeg
-map_Bump -bm 1.000000 seta_stitches_normal.png
+map_Bump seta_stitches_normal.png
 
 newmtl wheels_outter
 Ns 32.000008
