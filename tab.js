@@ -30,6 +30,8 @@ var value;
 // 	d_light : 8.5,
 // };
 
+objHref = "resources/obj/text/text.obj";
+
 document.addEventListener('DOMContentLoaded', function() {
     var canvas = document.getElementById("my-canvas");
 	gl = canvas.getContext("webgl");
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		return;
 	}
 
-    // gui = new dat.GUI();
+    gui = new dat.GUI();
     // gui.add(controls, "near", 			1,		10, 	1).onChange(function() {render(value, gl, controls, false)});
     // gui.add(controls, "far", 			1, 		100, 	1).onChange(function() {render(value, gl, controls, false)});
     // gui.add(controls, "d", 				0, 		10, 	1).onChange(function() {render(value, gl, controls, false)});

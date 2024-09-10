@@ -19,3 +19,4 @@
 
 //     render("resources/obj/logo/model.obj", gl, landingSpecs, true);
 // });
+objHref = '/obj/logo_2024/logo.obj';

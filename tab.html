@@ -18,6 +18,14 @@
                 width: 200px;
                 height: 100%;
             }
+            a{ color: black; }
+            footer{
+				position: sticky;
+				bottom: 0;
+			}
+            canvas{
+                border: 2px solid black;
+            }
         </style>
     </head>
     <body class="container-sm text-center">
@@ -51,6 +59,9 @@
 		<div class="d-grid gap-2 col-6 mx-auto">
 			<a class="btn btn-secondary" type="button" onclick=clicked()> START </a>
 		</div>
+        <!-- <div class="d-grid gap-2 col-6 mx-auto" id="footer"></div>
+			<a class="display-5" type="button" onclick=clicked()> START </a>
+		</div> -->
     </body>
 
 	<script type="text/javascript" src="/lib/webgl-utils.js"></script>
