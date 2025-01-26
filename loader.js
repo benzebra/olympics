@@ -266,7 +266,14 @@
 
 // async function main(canvas, objUrl){
 
-async function main(objUrl, gl, meshProgramInfo){
+let posX=0, posY=0;
+let D = 6;
+let drag = false;
+let old_x, old_y;
+let dX=0, dY=0;
+let shininess = 400;
+
+async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
     // gl = canvas.getContext("webgl");
 
     // if(!gl){
@@ -436,17 +443,23 @@ async function main(objUrl, gl, meshProgramInfo){
         -1);
     const cameraTarget = [0, 0, 0];
     const radius = m4.length(range) * 1.2;
-    const cameraPosition = m4.addVectors(cameraTarget, [
-        0,
-        0,
-        radius,
-    ]);
-
+    // if(freeMoving == false){
+        let cameraPosition = m4.addVectors(cameraTarget, [
+            0,
+            0,
+            radius,
+        ]);
+    // }
+    
     const zNear = radius / 100;
     const zFar = radius * 3;
 
     function degToRad(deg) {
         return deg * Math.PI / 180;
+    }
+
+    if(freeMoving == true){
+        var THETA = degToRad(20), PHI = degToRad(80);
     }
 
     function render(time) {
@@ -460,6 +473,11 @@ async function main(objUrl, gl, meshProgramInfo){
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
         const up = [0, 1, 0];
+        if(freeMoving == true){
+            cameraPosition = [D * Math.sin(PHI) * Math.cos(THETA),
+                                D * Math.sin(PHI) * Math.sin(THETA),
+                                D * Math.cos(PHI)];
+        }
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
         const view = m4.inverse(camera);
 
@@ -469,16 +487,19 @@ async function main(objUrl, gl, meshProgramInfo){
             u_projection: projection,
             u_viewWorldPosition: cameraPosition,
             u_shininessVal: 2,
-            Ka: 1,
-            Kd: 1,
-            Ks: 1,
+            // Ka: 1,
+            // Kd: 1,
+            // Ks: 1,
         };
 
         gl.useProgram(meshProgramInfo.program);
 
         webglUtils.setUniforms(meshProgramInfo, sharedUniforms);
 
-        let u_world = m4.yRotation(time)
+        let u_world = m4.yRotation(time);
+        if(freeMoving == true){
+            u_world = m4.multiply(m4.yRotation(posY), m4.xRotation(posX));
+        }
         u_world = m4.translate(u_world, ...objOffset);
 
         for (const {bufferInfo, material} of parts) {
@@ -492,4 +513,64 @@ async function main(objUrl, gl, meshProgramInfo){
     }
 
     render(0);
+
+    if(freeMoving == true){
+        var mouseDown = function(e) {
+            drag=true;
+            old_x=e.pageX, old_y=e.pageY;
+            e.preventDefault();
+            return false;
+        };
+    
+        var mouseUp = function(e){
+           drag=false;
+        };
+    
+        var mouseMove = function(e) {
+            if (!drag) return false; 
+                dX =- (e.pageX-old_x) * 2 * Math.PI / canvas.width; 
+                dY =- (e.pageY-old_y) * 2 * Math.PI / canvas.height; 
+                THETA += dX;
+            if (PHI + dY >= 0 && PHI + dY <= Math.PI)
+                PHI += dY;
+            old_x=e.pageX, old_y=e.pageY; 
+            e.preventDefault();
+        };
+    
+        canvas.onmousedown = mouseDown;
+        canvas.onmouseup = mouseUp;
+        canvas.mouseout = mouseUp;
+        canvas.onmousemove = mouseMove;
+    
+        canvas.onwheel = function(event){
+            if(event.deltaY < 0){
+                D = D - 0.1 * D;
+            }else{
+                D = D + 0.1 * D;
+            }
+        }
+    
+        document.addEventListener('keydown', function(event) {
+            if(event.keyCode == 65){
+                // A
+                posY = posY - 0.3;
+            }else if(event.keyCode == 68){
+                // D
+                posY = posY + 0.3; 
+            }else if(event.keyCode == 87){
+                // W
+                posX = posX - 0.3;
+            }else if(event.keyCode == 83){
+                // S
+                posX = posX + 0.3;
+            }else if(event.keyCode == 38){
+                // UP
+                shininess = shininess + 10;
+            }else if(event.keyCode == 40){
+                // DOWN
+                shininess = shininess - 10;
+            }
+        });
+    
+    }
 }

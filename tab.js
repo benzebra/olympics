@@ -2,7 +2,7 @@ let objArray = [
     "models/logo/model.obj", 
     "models/logo_2024/logo.obj", 
     "models/tennis/tennis.obj", 
-    "models/logo/model.obj", 
+    "models/volley/volley.obj", 
     "models/logo/model.obj", 
     "models/logo/model.obj", 
     "models/logo/model.obj", 
@@ -389,7 +389,7 @@ void main () {
 const canvas = document.getElementsByTagName("canvas");
 
 for(let i=0; i<canvas.length; i++){
-    gl = canvas[i].getContext("webgl");
+    gl = canvas[i].getContext("webgl");        
 
     if(!gl){
         console.log("WebGL not supported, falling back on experimental-webgl");
@@ -398,5 +398,5 @@ for(let i=0; i<canvas.length; i++){
 
     const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-    main(objArray[i], gl, meshProgramInfo);
+    main(objArray[i], gl, meshProgramInfo, false, canvas[i]);
 }

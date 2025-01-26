@@ -325,5 +325,5 @@ if(!gl){
 
 const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-main("models/logo_2024/logo.obj", gl, meshProgramInfo);
+main("models/logo_2024/logo.obj", gl, meshProgramInfo, false, canvas[i]);
 // main("models/soccerball/soccerball.obj", gl, meshProgramInfo);
