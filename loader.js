@@ -363,6 +363,7 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
 
     const textures = {
         defaultWhite: create1PixelTexture(gl, [255, 255, 255, 255]),
+        defaultNormal: create1PixelTexture(gl, [127, 127, 255, 0]),
     };
 
     // load texture for materials
@@ -383,8 +384,10 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
     const defaultMaterial = {
         diffuse: [1, 1, 1],
         diffuseMap: textures.defaultWhite,
+        normalMap: textures.defaultNormal,
         ambient: [0, 0, 0],
         specular: [1, 1, 1],
+        specularMap: textures.defaultWhite,
         shininess: 400,
         opacity: 1,
     };
@@ -396,6 +399,14 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
             }
         } else {
             data.color = { value: [1, 1, 1, 1] };
+        }
+
+        // generate tangents if we have the data to do so.
+        if (data.texcoord && data.normal) {
+            data.tangent = generateTangents(data.position, data.texcoord);
+        } else {
+            // There are no tangents
+            data.tangent = { value: [1, 0, 0] };
         }
 
         const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
@@ -444,11 +455,11 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
     const cameraTarget = [0, 0, 0];
     const radius = m4.length(range) * 1.2;
     // if(freeMoving == false){
-        let cameraPosition = m4.addVectors(cameraTarget, [
-            0,
-            0,
-            radius,
-        ]);
+    let cameraPosition = m4.addVectors(cameraTarget, [
+        0,
+        0,
+        radius,
+    ]);
     // }
     
     const zNear = radius / 100;
@@ -486,10 +497,14 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
             u_view: view,
             u_projection: projection,
             u_viewWorldPosition: cameraPosition,
-            u_shininessVal: 2,
-            // Ka: 1,
-            // Kd: 1,
-            // Ks: 1,
+            shininess: 10,
+            Ka: 0.9,
+            Kd: 1.0,
+            Ks: 0.9,
+            diffuseColor: [1.0, 1.0, 1.0],
+            ambientColor: [0.0, 0.0, 0.0],
+            specularColor: [0.5, 0.0, 1.0],
+            lightPos: [0.0, 1.0, 10.0],
         };
 
         gl.useProgram(meshProgramInfo.program);
@@ -500,6 +515,7 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
         if(freeMoving == true){
             u_world = m4.multiply(m4.yRotation(posY), m4.xRotation(posX));
         }
+        // let u_world = m4.identity();
         u_world = m4.translate(u_world, ...objOffset);
 
         for (const {bufferInfo, material} of parts) {

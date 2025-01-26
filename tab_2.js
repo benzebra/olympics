@@ -1,15 +1,131 @@
 "use strict";
 
-let posX=0, posY=0;
-let D = 6;
-let drag = false;
-let old_x, old_y;
-let dX=0, dY=0;
-let shininess = 400;
+const vs = `
+    varying vec2 v_texcoord;
+    varying vec3 v_color;
+
+    attribute vec4 a_position;
+    attribute vec3 a_normal;
+    uniform mat4 u_projection, u_view, u_world;
+    varying vec3 v_normal;
+    varying vec3 vertPos;
+
+    attribute vec2 a_texcoord;
+    attribute vec4 a_color;
+    attribute vec3 a_tangent;
+
+    varying vec3 v_tangent;
+
+    void main(){
+        vec4 vertPos4 = u_view * u_world * a_position;
+        vertPos = vec3(vertPos4) / vertPos4.w;
+
+        mat3 normalMat = mat3(u_world);
+        v_normal = normalize(normalMat * a_normal);
+        v_tangent = normalize(normalMat * a_tangent);
+
+        gl_Position = u_projection * u_view * u_world * a_position;
+
+        v_texcoord = a_texcoord;
+        v_color = a_color.rgb;
+    }
+    `;
+
+const fs = `
+    precision highp float;
+
+    varying vec3 v_normal;          // normalInterp
+    // varying vec3 v_surfaceToView;
+    varying vec3 vertPos;           // Vertex position
+    
+    varying vec2 v_texcoord;    
+    varying vec4 v_color;
+
+    //todo
+    uniform sampler2D diffuseMap;
+    uniform sampler2D specularMap;
+
+    // set by parseMTL
+    uniform vec3 diffuse;           // diffuseColor
+    uniform vec3 ambient;           // ambientColor
+    uniform vec3 specular;          // specularColor
+    uniform float shininess;      // shininessVal
+
+    // set by ME
+    uniform vec3 diffuseColor;           // diffuseColor
+    uniform vec3 ambientColor;           // ambientColor
+    uniform vec3 specularColor;          // specularColor
+    uniform float u_shininess;      // shininessVal
+    
+    // added
+    uniform vec3 lightPos; // Light position
+    uniform float Ka;   // Ambient reflection coefficient
+    uniform float Kd;   // Diffuse reflection coefficient
+    uniform float Ks;   // Specular reflection coefficient
+
+    // inutili
+    uniform float opacity;          // opacityVal ?? - da togliere (phong non ha opacity ma 1.0)
+    uniform vec3 u_lightDirection;  
+    uniform vec3 u_ambientLight;   
+    uniform vec3 emissive;          // emissiveColor ?? - da togliere
+
+    // to add ?
+    // uniform int mode;
+
+    varying vec3 v_tangent;
+    uniform sampler2D normalMap;
 
 
-// This is not a full .obj parser.
-// see http://paulbourke.net/dataformats/obj/
+    void main () {
+        vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+
+        vec3 tangent = normalize(v_tangent);
+        vec3 bitangent = normalize(cross(v_normal, tangent));
+        
+        mat3 tbn = mat3(tangent, bitangent, normal);
+        normal = texture2D(normalMap, v_texcoord).rgb * 2. - 1.;
+        normal = normalize(tbn * normal);
+
+        // vec3 normal = normalize(v_normal);
+        vec3 N = normalize(v_normal);
+        vec3 L = normalize(lightPos - vertPos);
+
+        float lambertian = max(dot(N, L), 0.0);
+        float specularLight = 0.0;
+        if(lambertian > 0.0){
+            vec3 R = reflect(-L, N);
+            vec3 V = normalize(-vertPos);
+            float specAngle = max(dot(R, V), 0.0);
+            specularLight = pow(specAngle, shininess);
+        }
+
+        vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
+        vec3 effectiveDiffuse = diffuseColor * diffuseMapColor.rgb;
+        // float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
+
+        vec4 specularMapColor = texture2D(specularMap, v_texcoord);
+        vec3 effectiveSpecular = (specularColor * specularMapColor.rgb) * specularLight;
+
+        gl_FragColor = vec4(emissive+
+                            Ka * ambientColor +
+                            Kd * lambertian * effectiveDiffuse +
+                            Ks * effectiveSpecular, 1.0);
+    }
+`;
+
+
+let objArray = [
+    "models/logo/model.obj", 
+    "models/logo_2024/logo.obj", 
+    "models/tennis/tennis.obj", 
+    "models/volley/volley.obj", 
+    "models/logo_2024/logo.obj", 
+    "models/logo/model.obj", 
+    "models/logo/model.obj", 
+    "models/logo/model.obj", 
+    "models/logo/model.obj", 
+    "models/logo/model.obj"
+];
 
 function parseOBJ(text) {
     // because indices are base 1 let's just fill in the 0th data
@@ -263,341 +379,74 @@ function createTexture(gl, url) {
     return texture;
 }
 
-
-async function main() {
-    // Get A WebGL context
-    /** @type {HTMLCanvasElement} */
-    const canvas = document.getElementsByTagName("canvas");
-    
-    let gl = [];
-    let meshProgramInfo = []
-    let textures = [];
-
-    const vs = `
-    attribute vec4 a_position;
-    attribute vec3 a_normal;
-    uniform mat4 u_projection, u_view, u_world;
-
-    varying vec3 v_normal;      // normalInterp
-
-
-    // varying vec3 normalInterp;   ??? 
-    // varying vec3 vertPos;        ???
-
-    // attribute vec2 a_texcoord;
-    // attribute vec4 a_color;
-    // uniform vec3 u_viewWorldPosition;
-    // varying vec3 v_surfaceToView;
-    // varying vec2 v_texcoord;
-    // varying vec4 v_color;
-
-    // vertPos4 = u_view * worldPosition; 
-    // vertPos4 = u_view * u_world * a_position; 
-    // u_world = modelView
-    // a_position = vec4(position, 1.0)
-
-    void main() {
-        vec4 worldPosition = u_world * a_position;
-        gl_Position = u_projection * u_view * worldPosition;
-        // v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
-        v_normal = mat3(u_world) * a_normal;
-        // v_texcoord = a_texcoord;
-        // v_color = a_color;
-    }
+function makeIndexIterator(indices) {
+    let ndx = 0;
+    const fn = () => indices[ndx++];
+    fn.reset = () => { ndx = 0; };
+    fn.numElements = indices.length;
+    return fn;
 }
-    `;
+  
+function makeUnindexedIterator(positions) {
+    let ndx = 0;
+    const fn = () => ndx++;
+    fn.reset = () => { ndx = 0; };
+    fn.numElements = positions.length / 3;
+    return fn;
+}
+  
+const subtractVector2 = (a, b) => a.map((v, ndx) => v - b[ndx]);
 
-    const fs = `
-    precision highp float;
-
-    varying vec3 v_normal;
-    varying vec3 v_surfaceToView;
-    varying vec2 v_texcoord;
-    varying vec4 v_color;
-
-    uniform vec3 diffuse;
-    uniform sampler2D diffuseMap;
-    uniform vec3 ambient;
-    uniform vec3 emissive;
-    uniform vec3 specular;
-    uniform float shininess;
-    uniform float opacity;
-    uniform vec3 u_lightDirection;
-    uniform vec3 u_ambientLight;
-
-    void main () {
-        vec3 normal = normalize(v_normal);
-
-        vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-        vec3 halfVector = normalize(u_lightDirection + surfaceToViewDirection);
-
-        float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
-        float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
-
-        vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
-        vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * v_color.rgb;
-        float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
-
-        gl_FragColor = vec4(emissive +
-                            ambient * u_ambientLight +
-                            effectiveDiffuse * fakeLight +
-                            specular * pow(specularLight, shininess), effectiveOpacity);
-
-        // emissive ??
-        // ambient * u_lightambient                 = ka * ambientcolor
-        // effectiveDiffuse * fakeLight             = kd * lambertian * diffusecolor
-        // specular * pow(specularLight, shininess) = ks * specularcolor * specular
+function generateTangents(position, texcoord, indices) {
+    const getNextIndex = indices ? makeIndexIterator(indices) : makeUnindexedIterator(position);
+    const numFaceVerts = getNextIndex.numElements;
+    const numFaces = numFaceVerts / 3;
+  
+    const tangents = [];
+    for (let i = 0; i < numFaces; ++i) {
+      const n1 = getNextIndex();
+      const n2 = getNextIndex();
+      const n3 = getNextIndex();
+  
+      const p1 = position.slice(n1 * 3, n1 * 3 + 3);
+      const p2 = position.slice(n2 * 3, n2 * 3 + 3);
+      const p3 = position.slice(n3 * 3, n3 * 3 + 3);
+  
+      const uv1 = texcoord.slice(n1 * 2, n1 * 2 + 2);
+      const uv2 = texcoord.slice(n2 * 2, n2 * 2 + 2);
+      const uv3 = texcoord.slice(n3 * 2, n3 * 2 + 2);
+  
+      const dp12 = m4.subtractVectors(p2, p1);
+      const dp13 = m4.subtractVectors(p3, p1);
+  
+      const duv12 = subtractVector2(uv2, uv1);
+      const duv13 = subtractVector2(uv3, uv1);
+  
+      const f = 1.0 / (duv12[0] * duv13[1] - duv13[0] * duv12[1]);
+      const tangent = Number.isFinite(f)
+        ? m4.normalize(m4.scaleVector(m4.subtractVectors(
+            m4.scaleVector(dp12, duv13[1]),
+            m4.scaleVector(dp13, duv12[1]),
+          ), f))
+        : [1, 0, 0];
+  
+      tangents.push(...tangent, ...tangent, ...tangent);
     }
-    `;
-
-    for (let i = 0; i < canvas.length; i++) {
-        gl[i] = canvas[i].getContext("webgl");
-        meshProgramInfo[i] = webglUtils.createProgramInfo(gl[i], [vs, fs]);
-
-        textures[i] = {
-            defaultWhite: create1PixelTexture(gl[i], [255, 255, 255, 255]),
-        };
-    }
-
-    const aspect = gl[1].canvas.clientWidth / gl[1].canvas.clientHeight;
-
-
-    // compiles and links the shaders, looks up attribute and uniform locations
-
-    const objHref = 'models/logo/model.obj'; 
-    const response = await fetch(objHref);
-    const text = await response.text();
-    const obj = parseOBJ(text);
-    const baseHref = new URL(objHref, window.location.href);
-    const matTexts = await Promise.all(obj.materialLibs.map(async filename => {
-        const matHref = new URL(filename, baseHref).href;
-        const response = await fetch(matHref);
-        return await response.text();
-    }));
-    const materials = parseMTL(matTexts.join('\n'));
-
-    // load texture for materials
-    for(let i=0; i<canvas.length; i++){
-        for (const material of Object.values(materials)) {
-            Object.entries(material)
-            .filter(([key]) => key.endsWith('Map'))
-            .forEach(([key, filename]) => {
-                let texture = textures[filename];
-                if (!texture) {
-                    const textureHref = new URL(filename, baseHref).href;
-                    texture = createTexture(gl[i], textureHref);
-                    textures[filename] = texture;
-                }
-                material[key] = texture;
-            });
-        }
-    }
-
-    const defaultMaterial = {
-        diffuse: [1, 1, 1],
-        diffuseMap: textures.defaultWhite,
-        ambient: [0, 0, 0],
-        specular: [1, 1, 1],
-        shininess: 400,
-        opacity: 1,
-    };
-
-    let parts = []
-    for(let i=0; i<canvas.length; i++){
-        parts[i] = obj.geometries.map(({material, data}) => {
-            if (data.color) {
-                if (data.position.length === data.color.length) {
-                    // it's 3. The our helper library assumes 4 so we need
-                    // to tell it there are only 3.
-                    data.color = { numComponents: 3, data: data.color };
-                }
-            } else {
-                // there are no vertex colors so just use constant white
-                data.color = { value: [1, 1, 1, 1] };
-            }
-    
-            // create a buffer for each array by calling
-            // gl.createBuffer, gl.bindBuffer, gl.bufferData
-            let bufferInfo = webglUtils.createBufferInfoFromArrays(gl[i], data);
-            return {
-                material: {
-                    ...defaultMaterial,
-                    ...materials[material],
-                },
-                bufferInfo,
-            };
-        });
-    }
-
-    function getExtents(positions) {
-        const min = positions.slice(0, 3);
-        const max = positions.slice(0, 3);
-        for (let i = 3; i < positions.length; i += 3) {
-            for (let j = 0; j < 3; ++j) {
-                const v = positions[i + j];
-                min[j] = Math.min(v, min[j]);
-                max[j] = Math.max(v, max[j]);
-            }
-        }
-        return {min, max};
-    }
-
-    function getGeometriesExtents(geometries) {
-        return geometries.reduce(({min, max}, {data}) => {
-            const minMax = getExtents(data.position);
-            return {
-                min: min.map((min, ndx) => Math.min(minMax.min[ndx], min)),
-                max: max.map((max, ndx) => Math.max(minMax.max[ndx], max)),
-            };
-        }, {
-            min: Array(3).fill(Number.POSITIVE_INFINITY),
-            max: Array(3).fill(Number.NEGATIVE_INFINITY),
-        });
-    }
-
-    const extents = getGeometriesExtents(obj.geometries);
-    const range = m4.subtractVectors(extents.max, extents.min);
-    // amount to move the object so its center is at the origin
-    const objOffset = m4.scaleVector(
-        m4.addVectors(
-            extents.min,
-            m4.scaleVector(range, 0.5)),
-        -1);
-    const cameraTarget = [0, 1, 0];
-    // figure out how far away to move the camera so we can likely
-    // see the object.
-    const radius = m4.length(range) * 1.2;
-    // const cameraPosition = m4.addVectors(cameraTarget, [
-    //     0,
-    //     0,
-    //     radius,
-    // ]);
-    // Set zNear and zFar to something hopefully appropriate
-    // for the size of this object.
-    const zNear = radius / 100;
-    const zFar = radius * 3;
-
-    function degToRad(deg) {
-        return deg * Math.PI / 180;
-    }
-
-    let THETA = degToRad(20), PHI = degToRad(80);
-    let fieldOfViewRadians = degToRad(60);
-
-    function render() {
-        for(let i = 0; i < canvas.length; i++){
-            webglUtils.resizeCanvasToDisplaySize(gl[i].canvas);
-            gl[i].viewport(0, 0, gl[i].canvas.width, gl[i].canvas.height);
-            gl[i].enable(gl[i].DEPTH_TEST);
-        }
-        
-
-        const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
-
-        const up = [0, 0, 1];
-        // Compute the camera's matrix using look at.
-        const camerapos = [D*Math.sin(PHI)*Math.cos(THETA),
-                            D*Math.sin(PHI)*Math.sin(THETA),
-                            D*Math.cos(PHI)];
-        // const camera = m4.lookAt(cameraPosition, cameraTarget, up);
-        const camera = m4.lookAt(camerapos, cameraTarget, up);
-
-        // Make a view matrix from the camera matrix.
-        const view = m4.inverse(camera);
-
-        const sharedUniforms = {
-            u_lightDirection: m4.normalize([-1, 3, 5]),
-            u_view: view,
-            u_projection: projection,
-            u_viewWorldPosition: camerapos,
-            u_shininess: shininess,
-        };
-
-        // compute the world matrix once since all parts
-        // are at the same space.
-        let u_world = m4.multiply(m4.yRotation(posY), m4.xRotation(posX));
-        // console.log(u_world);
-        u_world = m4.translate(u_world, ...objOffset);
-
-        for(let i=0; i<canvas.length; i++){
-            gl[i].useProgram(meshProgramInfo[i].program);
-
-            // calls gl.uniform
-            webglUtils.setUniforms(meshProgramInfo[i], sharedUniforms);
-
-            for (const {bufferInfo, material} of parts[i]) {
-                // calls gl.bindBuffer, gl.enableVertexAttribArray, gl.vertexAttribPointer
-                webglUtils.setBuffersAndAttributes(gl[i], meshProgramInfo[i], bufferInfo);
-                // calls gl.uniform
-                webglUtils.setUniforms(meshProgramInfo[i], {
-                    u_world
-                }, material);
-                // calls gl.drawArrays or gl.drawElements
-                webglUtils.drawBufferInfo(gl[i], bufferInfo);
-            }
-        }
-
-        requestAnimationFrame(render);
-    }
-
-    var mouseDown = function(e) {
-        drag=true;
-        old_x=e.pageX, old_y=e.pageY;
-        e.preventDefault();
-        return false;
-    };
-
-    var mouseUp = function(e){
-       drag=false;
-    };
-
-    var mouseMove = function(e) {
-        if (!drag) return false; 
-            dX =- (e.pageX-old_x) * 2 * Math.PI / canvas.width; 
-            dY =- (e.pageY-old_y) * 2 * Math.PI / canvas.height; 
-            THETA += dX;
-        if (PHI + dY >= 0 && PHI + dY <= Math.PI)
-            PHI += dY;
-        old_x=e.pageX, old_y=e.pageY; 
-        e.preventDefault();
-    };
-
-    canvas.onmousedown = mouseDown;
-    canvas.onmouseup = mouseUp;
-    canvas.mouseout = mouseUp;
-    canvas.onmousemove = mouseMove;
-
-    canvas.onwheel = function(event){
-        if(event.deltaY < 0){
-            D = D - 0.1 * D;
-        }else{
-            D = D + 0.1 * D;
-        }
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if(event.keyCode == 65){
-            // A
-            posY = posY - 0.3;
-        }else if(event.keyCode == 68){
-            // D
-            posY = posY + 0.3; 
-        }else if(event.keyCode == 87){
-            // W
-            posX = posX - 0.3;
-        }else if(event.keyCode == 83){
-            // S
-            posX = posX + 0.3;
-        }else if(event.keyCode == 38){
-            // UP
-            shininess = shininess + 10;
-        }else if(event.keyCode == 40){
-            // DOWN
-            shininess = shininess - 10;
-        }
-    });
-
-    render();
+  
+    return tangents;
 }
 
-main();
+const canvas = document.getElementsByTagName("canvas");
+
+for(let i=0; i<canvas.length; i++){
+    let gl = canvas[i].getContext("webgl");        
+
+    if(!gl){
+        console.log("WebGL not supported, falling back on experimental-webgl");
+        // gl = canvas[i].getContext("experimental-webgl");
+    }
+
+    const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
+
+    main(objArray[i], gl, meshProgramInfo, false, canvas[i]);
+}
