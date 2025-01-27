@@ -2,10 +2,12 @@
 # www.blender.org
 
 newmtl Volleyball
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd textures/Volleyball_baseColor.jpeg
-map_Bump -bm 1.000000 textures/Volleyball_normal.png
+map_Kd /Users/filippobrajucha/Developer/olympics/res/models/blend/textures/Volleyball_baseColor.jpeg
+map_Bump -bm 1.000000 /Users/filippobrajucha/Developer/olympics/res/models/blend/textures/Volleyball_normal.png
