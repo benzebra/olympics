@@ -453,7 +453,7 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
             m4.scaleVector(range, 0.5)),
         -1);
     const cameraTarget = [0, 0, 0];
-    const radius = m4.length(range) * 1.2;
+    const radius = m4.length(range) * 1.5;
     // if(freeMoving == false){
     let cameraPosition = m4.addVectors(cameraTarget, [
         0,
@@ -496,7 +496,6 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
             u_lightDirection: m4.normalize([-1, 3, 5]),
             u_view: view,
             u_projection: projection,
-            u_viewWorldPosition: cameraPosition,
             shininess: 10,
             Ka: 0.9,
             Kd: 1.0,

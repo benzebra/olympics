@@ -115,16 +115,16 @@ const fs = `
 
 
 let objArray = [
-    "models/logo/model.obj", 
-    "models/logo_2024/logo.obj", 
+    "models/sail/sail.obj", 
+    "models/bike/bike.obj", 
     "models/tennis/tennis.obj", 
     "models/volley/volley.obj", 
-    "models/logo_2024/logo.obj", 
-    "models/logo/model.obj", 
-    "models/logo/model.obj", 
-    "models/logo/model.obj", 
-    "models/logo/model.obj", 
-    "models/logo/model.obj"
+    "models/gun/gun.obj", 
+    "models/gym/gym.obj", 
+    "models/judo/judo.obj", 
+    "models/kayak/kayak.obj", 
+    "models/sword/sword.obj", 
+    "models/swim_shrek/swim_shrek.obj"
 ];
 
 function parseOBJ(text) {
