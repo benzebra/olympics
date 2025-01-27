@@ -1,6 +1,6 @@
 # Blender 4.2.0
 # www.blender.org
-mtllib medal_sail.mtl
+mtllib medal_gym.mtl
 o Cylinder
 v 0.000000 5.000000 -0.400000
 v 0.000000 5.000000 0.600000

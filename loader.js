@@ -296,16 +296,16 @@ let old_x, old_y;
 
 let objArray = [
     // 0-9 MEDALS
+    "medals/medal_volley.obj", 
+    "medals/medal_bike.obj", 
     "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
-    "medals/medal_sail.obj", 
+    "medals/medal_gun.obj", 
+    "medals/medal_gym.obj", 
+    "medals/medal_tennis.obj", 
+    "medals/medal_judo.obj", 
+    "medals/medal_kayak.obj", 
+    "medals/medal_sword.obj", 
+    "medals/medal_swim.obj", 
     // 10 LOGO
     "logo_2024/logo.obj",
     // 11-20 OBJECTS
