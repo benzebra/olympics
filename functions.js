@@ -1,5 +1,99 @@
-let obj = "models/volley/volley.obj";
+"use strict";
 
+const vs = `
+  attribute vec3 a_position;
+  attribute vec3 a_normal;
+  attribute vec2 a_texcoord;
+  attribute vec4 a_color;
+
+  uniform mat4 u_projection;
+  uniform mat4 u_view;
+  uniform mat4 u_world;
+  uniform vec3 u_viewWorldPosition;
+
+  varying vec3 v_normal;
+  varying vec3 v_surfaceToView;
+  varying vec2 v_texcoord;
+  varying vec4 v_color;
+  varying vec3 vertPos;
+
+  void main() {
+    vec4 vertPos4 = u_world * vec4(a_position, 1.0); 
+    vertPos = vec3(vertPos4) / vertPos4.w;            
+    v_normal = vec3(u_world * vec4(a_normal, 0.0));   
+    gl_Position = u_projection * u_view * vertPos4;   
+    v_texcoord = a_texcoord;
+    v_color = a_color;
+  }
+  `;
+
+    const fs = `
+    precision highp float;
+  
+    varying vec3 v_normal;
+    varying vec3 v_surfaceToView;
+    varying vec3 vertPos;
+    varying vec2 v_texcoord;
+    varying vec4 v_color;
+  
+    uniform vec3 lightPos;
+    uniform vec3 u_ambientLight;
+    uniform float shininessAmbient;
+    
+    uniform vec3 diffuse;
+    uniform vec3 ambient;
+    uniform vec3 emissive;
+    uniform vec3 specular;
+    uniform float shininess;
+    uniform float opacity;
+  
+    uniform float Ka;
+    uniform float Kd;
+    uniform float Ks;
+  
+    uniform int mode;
+  
+    uniform sampler2D diffuseMap;
+    uniform sampler2D specularMap;
+  
+    void main () {
+      vec3 N = normalize(v_normal);
+      vec3 L = normalize(lightPos - vertPos);
+      float lambertian = max(dot(N, L), 0.0);
+      float specularLight = 0.0;
+  
+      if (lambertian > 0.0) {
+          vec3 R = reflect(-L, N);      // Reflected light vector
+          vec3 V = normalize(-vertPos); // Vector to viewer
+          float specAngle = max(dot(R, V), 0.0);
+          specularLight = pow(specAngle, shininessAmbient);
+      }
+  
+      // Leggi la mappa di diffusione e combina con il colore dell'oggetto
+      vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
+      vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * v_color.rgb;
+  
+      // Leggi la mappa di specularitÃ
+      vec4 specularMapColor = texture2D(specularMap, v_texcoord);
+      vec3 effectiveSpecular = specularMapColor.rgb * specularLight * specular;
+  
+      // Calcola il colore finale
+      gl_FragColor = vec4(
+        Ka * ambient + 
+        Kd * lambertian * effectiveDiffuse + 
+        Ks * effectiveSpecular + emissive, 
+        diffuseMapColor.a * v_color.a * opacity 
+      );
+  
+     // only ambient
+    if(mode == 2) gl_FragColor = vec4(Ka * u_ambientLight, 1.0);
+    // only diffuse
+    if(mode == 3) gl_FragColor = vec4(Kd * lambertian * diffuse, 1.0);
+    // only specular
+    if(mode == 4) gl_FragColor = vec4(Ks * specularLight * specular, 1.0);
+  
+    }
+  `;
 
 function parseOBJ(text) {
     // because indices are base 1 let's just fill in the 0th data
@@ -253,135 +347,59 @@ function createTexture(gl, url) {
     return texture;
 }
 
-// const vs = `
-//     attribute vec3 position;
-//     attribute vec3 normal;
-//     uniform mat4 projection, modelview, normalMat;
-//     varying vec3 normalInterp;
-//     varying vec3 vertPos;
-
-//     void main(){
-//         vec4 vertPos4 = modelview * vec4(position, 1.0);
-//         vertPos = vec3(vertPos4) / vertPos4.w;
-//         normalInterp = vec3(normalMat * vec4(normal, 0.0));
-//         gl_Position = projection * vertPos4;
-//     }
-// `;
-
-// const fs = `
-//     precision mediump float;
-//     varying vec3 normalInterp;  // Surface normal
-//     varying vec3 vertPos;       // Vertex position
-//     uniform int mode;   // Rendering mode
-//     uniform float Ka;   // Ambient reflection coefficient
-//     uniform float Kd;   // Diffuse reflection coefficient
-//     uniform float Ks;   // Specular reflection coefficient
-//     uniform float shininessVal; // Shininess
-//     // Material color
-//     uniform vec3 ambientColor;
-//     uniform vec3 diffuseColor;
-//     uniform vec3 specularColor;
-//     uniform vec3 lightPos; // Light position
-
-//     void main() {
-//     vec3 N = normalize(normalInterp);
-//     vec3 L = normalize(lightPos - vertPos);
-
-//     // Lambert's cosine law
-//     float lambertian = max(dot(N, L), 0.0);
-//     float specular = 0.0;
-//     if(lambertian > 0.0) {
-//         vec3 R = reflect(-L, N);      // Reflected light vector
-//         vec3 V = normalize(-vertPos); // Vector to viewer
-//         // Compute the specular term
-//         float specAngle = max(dot(R, V), 0.0);
-//         specular = pow(specAngle, shininessVal);
-//     }
-//     gl_FragColor = vec4(Ka * ambientColor +
-//                         Kd * lambertian * diffuseColor +
-//                         Ks * specular * specularColor, 1.0);
-
-//     // only ambient
-//     if(mode == 2) gl_FragColor = vec4(Ka * ambientColor, 1.0);
-//     // only diffuse
-//     if(mode == 3) gl_FragColor = vec4(Kd * lambertian * diffuseColor, 1.0);
-//     // only specular
-//     if(mode == 4) gl_FragColor = vec4(Ks * specular * specularColor, 1.0);
-//     }
-// `;
-const vs = `
-attribute vec4 a_position;
-attribute vec3 a_normal;
-attribute vec2 a_texcoord;
-attribute vec4 a_color;
-
-uniform mat4 u_projection;
-uniform mat4 u_view;
-uniform mat4 u_world;
-uniform vec3 u_viewWorldPosition;
-
-varying vec3 v_normal;
-varying vec3 v_surfaceToView;
-varying vec2 v_texcoord;
-varying vec4 v_color;
-
-void main() {
-    vec4 worldPosition = u_world * a_position;
-    gl_Position = u_projection * u_view * worldPosition;
-    v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
-    v_normal = mat3(u_world) * a_normal;
-    v_texcoord = a_texcoord;
-    v_color = a_color;
+function makeIndexIterator(indices) {
+    let ndx = 0;
+    const fn = () => indices[ndx++];
+    fn.reset = () => { ndx = 0; };
+    fn.numElements = indices.length;
+    return fn;
 }
-`;
-
-const fs = `
-precision highp float;
-
-varying vec3 v_normal;
-varying vec3 v_surfaceToView;
-varying vec2 v_texcoord;
-varying vec4 v_color;
-
-uniform vec3 diffuse;
-uniform sampler2D diffuseMap;
-uniform vec3 ambient;
-uniform vec3 emissive;
-uniform vec3 specular;
-uniform float shininess;
-uniform float opacity;
-uniform vec3 u_lightDirection;
-uniform vec3 u_ambientLight;
-
-void main () {
-    vec3 normal = normalize(v_normal);
-
-    vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-    vec3 halfVector = normalize(u_lightDirection + surfaceToViewDirection);
-
-    float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
-    float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
-
-    vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
-    vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * v_color.rgb;
-    float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
-
-    gl_FragColor = vec4(
-        emissive +
-        ambient * u_ambientLight +
-        effectiveDiffuse * fakeLight +
-        specular * pow(specularLight, shininess),
-        effectiveOpacity);
+  
+function makeUnindexedIterator(positions) {
+    let ndx = 0;
+    const fn = () => ndx++;
+    fn.reset = () => { ndx = 0; };
+    fn.numElements = positions.length / 3;
+    return fn;
 }
-`;
+  
+const subtractVector2 = (a, b) => a.map((v, ndx) => v - b[ndx]);
 
-const canvas = document.getElementById("canvas");
-gl = canvas.getContext("webgl");
-
-if(!gl){
-    console.log("WebGL not supported, falling back on experimental-webgl");
-    // gl = canvas[i].getContext("experimental-webgl");
+function generateTangents(position, texcoord, indices) {
+    const getNextIndex = indices ? makeIndexIterator(indices) : makeUnindexedIterator(position);
+    const numFaceVerts = getNextIndex.numElements;
+    const numFaces = numFaceVerts / 3;
+  
+    const tangents = [];
+    for (let i = 0; i < numFaces; ++i) {
+      const n1 = getNextIndex();
+      const n2 = getNextIndex();
+      const n3 = getNextIndex();
+  
+      const p1 = position.slice(n1 * 3, n1 * 3 + 3);
+      const p2 = position.slice(n2 * 3, n2 * 3 + 3);
+      const p3 = position.slice(n3 * 3, n3 * 3 + 3);
+  
+      const uv1 = texcoord.slice(n1 * 2, n1 * 2 + 2);
+      const uv2 = texcoord.slice(n2 * 2, n2 * 2 + 2);
+      const uv3 = texcoord.slice(n3 * 2, n3 * 2 + 2);
+  
+      const dp12 = m4.subtractVectors(p2, p1);
+      const dp13 = m4.subtractVectors(p3, p1);
+  
+      const duv12 = subtractVector2(uv2, uv1);
+      const duv13 = subtractVector2(uv3, uv1);
+  
+      const f = 1.0 / (duv12[0] * duv13[1] - duv13[0] * duv12[1]);
+      const tangent = Number.isFinite(f)
+        ? m4.normalize(m4.scaleVector(m4.subtractVectors(
+            m4.scaleVector(dp12, duv13[1]),
+            m4.scaleVector(dp13, duv12[1]),
+          ), f))
+        : [1, 0, 0];
+  
+      tangents.push(...tangent, ...tangent, ...tangent);
+    }
+  
+    return tangents;
 }
-
-const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
-main(obj, gl, meshProgramInfo, true, canvas);

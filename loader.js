@@ -266,6 +266,8 @@
 
 // async function main(canvas, objUrl){
 
+let stringIntro = "res/models/";
+
 let posX=0, posY=0;
 let D = 6;
 let drag = false;
@@ -273,83 +275,36 @@ let old_x, old_y;
 let dX=0, dY=0;
 let shininess = 400;
 
-async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
-    // gl = canvas.getContext("webgl");
+let objArray = [
+    // 0-9 MEDALS
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    "medals/medal_sail.obj", 
+    // 10 LOGO
+    "logo_2024/logo.obj",
+    // 11-20 OBJECTS
+    "volley/volley.obj",
+    "bike/bike.obj",
+    "sail/sail.obj",
+    "gun/gun.obj",
+    "gym/gym.obj",
+    "tennis/tennis.obj",
+    "judo/judo.obj",
+    "kayak/kayak.obj",
+    "sword/sword.obj",
+    "swim/swim.obj"
+];
 
-    // if(!gl){
-    //     return;
-    // }
 
-    // const vs = `
-    // attribute vec4 a_position;
-    // attribute vec3 a_normal;
-    // attribute vec2 a_texcoord;
-    // attribute vec4 a_color;
-
-    // uniform mat4 u_projection;
-    // uniform mat4 u_view;
-    // uniform mat4 u_world;
-    // uniform vec3 u_viewWorldPosition;
-
-    // varying vec3 v_normal;
-    // varying vec3 v_surfaceToView;
-    // varying vec2 v_texcoord;
-    // varying vec4 v_color;
-
-    // void main() {
-    //     vec4 worldPosition = u_world * a_position;
-    //     gl_Position = u_projection * u_view * worldPosition;
-    //     v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
-    //     v_normal = mat3(u_world) * a_normal;
-    //     v_texcoord = a_texcoord;
-    //     v_color = a_color;
-    // }
-    // `;
-
-    // const fs = `
-    // precision highp float;
-
-    // varying vec3 v_normal;
-    // varying vec3 v_surfaceToView;
-    // varying vec2 v_texcoord;
-    // varying vec4 v_color;
-
-    // uniform vec3 diffuse;
-    // uniform sampler2D diffuseMap;
-    // uniform vec3 ambient;
-    // uniform vec3 emissive;
-    // uniform vec3 specular;
-    // uniform float shininess;
-    // uniform float opacity;
-    // uniform vec3 u_lightDirection;
-    // uniform vec3 u_ambientLight;
-
-    // void main () {
-    //     vec3 normal = normalize(v_normal);
-
-    //     vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-    //     vec3 halfVector = normalize(u_lightDirection + surfaceToViewDirection);
-
-    //     float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
-    //     float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
-
-    //     vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
-    //     vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * v_color.rgb;
-    //     float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
-
-    //     gl_FragColor = vec4(
-    //         emissive +
-    //         ambient * u_ambientLight +
-    //         effectiveDiffuse * fakeLight +
-    //         specular * pow(specularLight, shininess),
-    //         effectiveOpacity);
-    // }
-    // `;
-
-    // // compiles and links the shaders, looks up attribute and uniform locations
-    // const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
-
-    const objHref = objUrl; 
+async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
+    const objHref = stringIntro + objArray[objIndex]; 
     const response = await fetch(objHref);
     const text = await response.text();
     const obj = parseOBJ(text);
@@ -496,14 +451,15 @@ async function main(objUrl, gl, meshProgramInfo, freeMoving, canvas){
             u_lightDirection: m4.normalize([-1, 3, 5]),
             u_view: view,
             u_projection: projection,
-            shininess: 10,
-            Ka: 0.9,
-            Kd: 1.0,
-            Ks: 0.9,
-            diffuseColor: [1.0, 1.0, 1.0],
-            ambientColor: [0.0, 0.0, 0.0],
-            specularColor: [0.5, 0.0, 1.0],
-            lightPos: [0.0, 1.0, 10.0],
+            shininessAmbient: 100,
+            Ka: 0.1,
+            Kd: 0.9,
+            Ks: 0.7,
+            // diffuseColor: [1.0, 1.0, 1.0],
+            // ambientColor: [0.0, 0.0, 0.0],
+            // specularColor: [0.5, 0.0, 1.0],
+            diffuse: [1.0,1.0,1.0],
+            lightPos: [0.0, 8.0, 10.0],
         };
 
         gl.useProgram(meshProgramInfo.program);
