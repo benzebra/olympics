@@ -321,8 +321,18 @@ let objArray = [
     "swim_shrek/swim_shrek.obj"
 ];
 
+let renderStatus = 0
 
-async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
+function setRenderStatus(status, gl){
+    renderStatus = status;
+    glToMove = gl;
+    // console.log("Render status: " + renderStatus);
+}
+
+// if renderStatus == 0, the object is not spinning, if renderStatus == 1, the object is spinning
+async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
+    // console.log("renderStatus: " + renderStatus);
+
     const objHref = stringIntro + objArray[objIndex]; 
     const response = await fetch(objHref);
     const text = await response.text();
@@ -420,7 +430,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
     }
 
     const extents = getGeometriesExtents(obj.geometries);
-    console.log(extents);
+    // console.log(extents);
     const range = m4.subtractVectors(extents.max, extents.min);
     const objOffset = m4.scaleVector(
         m4.addVectors(
@@ -488,11 +498,17 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
 
         webglUtils.setUniforms(meshProgramInfo, sharedUniforms);
 
-        let u_world = m4.yRotation(time);
-        if(freeMoving == true){
-            u_world = m4.multiply(m4.yRotation(controls.posY), m4.xRotation(controls.posX));
-            // u_world = m4.scale(m4.identity(), 0.18, 0.18, 0.18);
+        let u_world;
+        if(renderStatus == 1 && gl == glToMove){
+            u_world = m4.yRotation(time);
+        }else{
+            u_world = m4.identity();
         }
+
+        // if(freeMoving == true){
+        //     u_world = m4.multiply(m4.yRotation(controls.posY), m4.xRotation(controls.posX));
+        //     // u_world = m4.scale(m4.identity(), 0.18, 0.18, 0.18);
+        // }
         u_world = m4.translate(u_world, ...objOffset);
 
         for (const {bufferInfo, material} of parts) {
@@ -502,6 +518,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
             }, material);
             webglUtils.drawBufferInfo(gl, bufferInfo);
         }
+
         requestAnimationFrame(render);
     }
 
