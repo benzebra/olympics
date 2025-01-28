@@ -10,33 +10,43 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 		<link rel="stylesheet" type="text/css" href="style/style.css">
+
+		<style>
+			#canvas{
+				width: 100vw;
+				height: 100vh;
+			}
+			body{
+				margin: 0;
+			}
+		</style>
     </head>
 
-	<body>
-		<nav class="display-3 navbar navbar-expand-xxl py-3 personalized-nav">
+	<body class="overflow-hidden">
+		<nav class="display-4 navbar navbar-expand-xxl py-3 personalized-bg position-absolute w-100">
 			<div class="container-fluid">
-				<!-- <a class="navbar-brand text-white" href="index.html"> Olympics 3D Paris 2024 </a>  -->
 				<a class="navbar-brand" href="index.html">
 					<img src="res/Olympics_logo.svg" alt="Olympics 3D Paris 2024" width="150" height="80">
+					<!-- <img src="https://parigi2024.coni.it/images/italia_team-logo-parigi2024.svg" alt="IT" width="150" height="80"> -->
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<img src="res/menu.svg" alt="menu" width="30" height="30">
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						<li class="nav-item">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0 px-3">
+						<li class="nav-item px-2">
 							<a class="nav-link text-white" aria-current="page" href="index.html"> Home </a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link active text-white" aria-current="page" href="tab.html"> Tab </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="tab.html"> Tab </a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link active text-white" aria-current="page" href="doc.html"> Doc </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="doc.html"> Doc </a>
 						</li>
 					</ul>
 					<ul class="navbar-nav justify-content-end">
-						<li class="nav-item ">
-							<a class="nav-link active text-white" aria-current="page" href="about.html"> About Me </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="about.html"> About Me </a>
 						</li>
 					</ul>
 				</div>
@@ -44,23 +54,15 @@
 		</nav>
   
 
-		<div id="canvas-div" class="container mt-4">
+		<div id="canvas-div" class="">
 			<canvas class="w-100" id="canvas"></canvas>
 		</div>
 
-		<!-- <div class="d-grid gap-2 col-6 mx-auto">
-			<a class="btn btn-primary" type="button" href="tab.html"> GO TO TAB </a>
-		</div> -->
-
-		<div class="personalized-nav text-center py-3">
-			<a href="tab.html" class="text-white text-decoration-none"> 
-				<p class="display-6 mb-0"> View Medals > </p>	
+		<div class="fixed-bottom personalized-bg text-center py-3">
+				<a href="tab.html" class="text-white text-decoration-none"> 
+				<p class="display-6"> View Medals > </p>	
 			</a>
 		</div>
-
-        <!-- <div>
-            <a href="about.html">About ME!</a>
-        </div> -->
 
 	</body>
 

@@ -13,9 +13,8 @@
     </head>
 
 	<body>
-		<nav class="display-3 navbar navbar-expand-xxl py-3 personalized-nav">
+		<nav class="display-4 navbar navbar-expand-xxl py-3 personalized-bg w-100">
 			<div class="container-fluid">
-				<!-- <a class="navbar-brand text-white" href="index.html"> Olympics 3D Paris 2024 </a>  -->
 				<a class="navbar-brand" href="index.html">
 					<img src="res/Olympics_logo.svg" alt="Olympics 3D Paris 2024" width="150" height="80">
 				</a>
@@ -23,32 +22,52 @@
 					<img src="res/menu.svg" alt="menu" width="30" height="30">
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						<li class="nav-item">
-							<a class="nav-link active text-white" aria-current="page" href="index.html"> Home </a>
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0 px-3">
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="index.html"> Home </a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link active text-white" aria-current="page" href="tab.html"> Tab </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="tab.html"> Tab </a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link active text-white" aria-current="page" href="doc.html"> Doc </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="doc.html"> Doc </a>
 						</li>
 					</ul>
 					<ul class="navbar-nav justify-content-end">
-						<li class="nav-item ">
-							<a class="nav-link active text-white" aria-current="page" href="about.html"> About Me </a>
+						<li class="nav-item px-2">
+							<a class="nav-link text-white" aria-current="page" href="about.html"> About Me </a>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</nav>
   
-		<div id="canvas-div">
-			<canvas class="w-100" id="canvas"></canvas>
-		</div>
-	
+		<div class="container mt-2">
+			<div class="row d-flex justify-content-around gap-10">
+				<div class="col-12 col-lg-6 p-1">
+					<div class="container">
+						<canvas id="focus-canvas"></canvas>
+					</div>
+				</div>
+				<div id="article" class="col-12 col-lg-6 p-1">
+					<h1>Object</h1>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure 
+						dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure 
+						dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					</p>
+				</div>
+			</div>
 		</div>
 		
+
 	</body>
 
     <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
