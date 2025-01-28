@@ -7,3 +7,32 @@ p{
  /* nav{
     background-color: rgb(27, 33, 46);
  } */
+ @font-face {
+    font-family: 'Olympic Headline';
+    src: url('/fonts/OlympicHeadline-Regular.eot');
+    src: local('Olympic Headline'), local('OlympicHeadline-Regular'),
+        url('/fonts/OlympicHeadline-Regular.eot?#iefix') format('embedded-opentype'),
+        url('/fonts/OlympicHeadline-Regular.woff2') format('woff2'),
+        url('/fonts/OlympicHeadline-Regular.woff') format('woff'),
+        url('/fonts/OlympicHeadline-Regular.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Olympic Headline';
+    src: url('/fonts/OlympicHeadline-RegularItalic.eot');
+    src: local('Olympic Headline Regular Italic'), local('OlympicHeadline-RegularItalic'),
+        url('/fonts/OlympicHeadline-RegularItalic.eot?#iefix') format('embedded-opentype'),
+        url('/fonts/OlympicHeadline-RegularItalic.woff2') format('woff2'),
+        url('/fonts/OlympicHeadline-RegularItalic.woff') format('woff'),
+        url('/fonts/OlympicHeadline-RegularItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+*{
+    font-family: 'Olympic Headline', sans-serif;
+}
