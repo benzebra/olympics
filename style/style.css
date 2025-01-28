@@ -36,3 +36,8 @@ p{
 *{
     font-family: 'Olympic Headline', sans-serif;
 }
+
+.personalized-nav{
+    background-color: rgb(27, 33, 46);
+    color: white;
+}
