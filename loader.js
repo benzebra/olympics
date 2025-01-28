@@ -427,7 +427,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
             extents.min,
             m4.scaleVector(range, 0.5)),
         -1);
-    const cameraTarget = [0, 0, 0];
+    const cameraTarget = [0, 1, 0];
     const radius = m4.length(range) * 1.5;
     // if(freeMoving == false){
     let cameraPosition = m4.addVectors(cameraTarget, [
@@ -464,7 +464,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas){
                 controls.D * Math.cos(controls.PHI) * Math.sin(controls.THETA),
                 controls.D * Math.sin(controls.PHI),
                 controls.D * Math.cos(controls.PHI) * Math.cos(controls.THETA),
-                            ];
+              ];
         }
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
         const view = m4.inverse(camera);
