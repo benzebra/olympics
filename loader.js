@@ -267,24 +267,15 @@
 // async function main(canvas, objUrl){
 
 let stringIntro = "res/models/";
-// let shininess = 400;
-
-
-// let posX=0, posY=0;
-// let D = 6;
-// let drag = false;
-// let old_x, old_y;
-// let dX=0, dY=0;
-// let shininess = 400;
 
 var controls = {
     posX: 0, 
     posY: 0,
-    D: 6,
+    D: 0,
     dX: 0,
     dY: 0,
-    THETA: degToRad(20),
-    PHI: degToRad(80),
+    THETA: 0,
+    PHI: 0,
     shininess: 100,
     Ka: 0.1,
     Kd: 0.9,
@@ -326,12 +317,9 @@ let renderStatus = 0
 function setRenderStatus(status, gl){
     renderStatus = status;
     glToMove = gl;
-    // console.log("Render status: " + renderStatus);
 }
 
-// if renderStatus == 0, the object is not spinning, if renderStatus == 1, the object is spinning
 async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
-    // console.log("renderStatus: " + renderStatus);
 
     const objHref = stringIntro + objArray[objIndex]; 
     const response = await fetch(objHref);
@@ -430,7 +418,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
     }
 
     const extents = getGeometriesExtents(obj.geometries);
-    // console.log(extents);
+    console.log(extents);
     const range = m4.subtractVectors(extents.max, extents.min);
     const objOffset = m4.scaleVector(
         m4.addVectors(
@@ -438,25 +426,15 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
             m4.scaleVector(range, 0.5)),
         -1);
     const cameraTarget = [0, 1, 0];
-    const radius = m4.length(range) * 1.5;
-    // if(freeMoving == false){
+    const radius = m4.length(range);
     let cameraPosition = m4.addVectors(cameraTarget, [
         0,
         0,
-        radius,
+        radius * 1.3,
     ]);
-    // }
     
-    const zNear = radius / 100;
-    const zFar = radius * 3;
-
-    // function degToRad(deg) {
-    //     return deg * Math.PI / 180;
-    // }
-
-    if(freeMoving == true){
-        // var THETA = degToRad(20), PHI = degToRad(80);
-    }
+    let zNear = radius / 100;
+    let zFar = radius + 30; // radius + max(D)
 
     function render(time) {
         time *= 0.001;  // convert to seconds
@@ -471,9 +449,9 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
         const up = [0, 1, 0];
         if(freeMoving == true){
             cameraPosition = [
-                controls.D * Math.cos(controls.PHI) * Math.sin(controls.THETA),
-                controls.D * Math.sin(controls.PHI),
-                controls.D * Math.cos(controls.PHI) * Math.cos(controls.THETA),
+                (radius/1.5 + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
+                (radius/1.5 + controls.D) * Math.sin(controls.PHI),
+                (radius/1.5 + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
               ];
         }
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
@@ -487,9 +465,6 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
             Ka: controls.Ka,
             Kd: controls.Kd,
             Ks: controls.Ks,
-            // diffuseColor: [1.0, 1.0, 1.0],
-            // ambientColor: [0.0, 0.0, 0.0],
-            // specularColor: [0.5, 0.0, 1.0],
             diffuse: [1.0, 1.0, 1.0],
             lightPos: [0.0, 8.0, 10.0],
         };
@@ -505,10 +480,6 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
             u_world = m4.identity();
         }
 
-        // if(freeMoving == true){
-        //     u_world = m4.multiply(m4.yRotation(controls.posY), m4.xRotation(controls.posX));
-        //     // u_world = m4.scale(m4.identity(), 0.18, 0.18, 0.18);
-        // }
         u_world = m4.translate(u_world, ...objOffset);
 
         for (const {bufferInfo, material} of parts) {
