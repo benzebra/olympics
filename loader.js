@@ -321,6 +321,10 @@ function setRenderStatus(status, gl){
     glToMove = gl;
 }
 
+function getControls(){
+    return controls;
+}
+
 async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
 
     const objHref = stringIntro + objArray[objIndex]; 
@@ -501,66 +505,65 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
 
     render(0);
 
-    if(freeMoving == true){
+    // if(freeMoving == true){
 
-        var mouseDown = function(e) {
-            drag=true;
-            old_x=e.pageX, old_y=e.pageY;
-            e.preventDefault();
-            return false;
-        };
+    //     var mouseDown = function(e) {
+    //         drag=true;
+    //         old_x=e.pageX, old_y=e.pageY;
+    //         e.preventDefault();
+    //         return false;
+    //     };
     
-        var mouseUp = function(e){
-        drag=false;
-        };
+    //     var mouseUp = function(e){
+    //     drag=false;
+    //     };
     
-        var mouseMove = function(e) {
-            if (!drag) return false; 
-                controls.dX =- (e.pageX-old_x) * 2 * Math.PI / canvas.width; 
-                controls.dY =- (e.pageY-old_y) * 2 * Math.PI / canvas.height; 
-                controls.THETA += controls.dX;
-            if (controls.PHI + controls.dY >= 0 && controls.PHI + controls.dY <= Math.PI)
-                controls.PHI += controls.dY;
+    //     var mouseMove = function(e) {
+    //         if (!drag) return false; 
+    //             controls.dX =- (e.pageX-old_x) * 2 * Math.PI / canvas.width; 
+    //             controls.dY =- (e.pageY-old_y) * 2 * Math.PI / canvas.height; 
+    //             controls.THETA += controls.dX;
+    //         if (controls.PHI + controls.dY >= 0 && controls.PHI + controls.dY <= Math.PI)
+    //             controls.PHI += controls.dY;
     
-            old_x = e.pageX
-            old_y = e.pageY; 
-            e.preventDefault();
-        };
+    //         old_x = e.pageX
+    //         old_y = e.pageY; 
+    //         e.preventDefault();
+    //     };
     
-        canvas.onmousedown = mouseDown;
-        canvas.onmouseup = mouseUp;
-        canvas.mouseout = mouseUp;
-        canvas.onmousemove = mouseMove;
+    //     canvas.onmousedown = mouseDown;
+    //     canvas.onmouseup = mouseUp;
+    //     canvas.mouseout = mouseUp;
+    //     canvas.onmousemove = mouseMove;
     
-        canvas.onwheel = function(event){
-            if(event.deltaY < 0){
-                controls.D = controls.D - 0.1 * controls.D;
-            }else{
-                controls.D = controls.D + 0.1 * controls.D;
-            }
-        }
+    //     canvas.onwheel = function(event){
+    //         if(event.deltaY < 0){
+    //             controls.D = controls.D - 0.1 * controls.D;
+    //         }else{
+    //             controls.D = controls.D + 0.1 * controls.D;
+    //         }
+    //     }
     
-        document.addEventListener('keydown', function(event) {
-            if(event.keyCode == 65){
-                // A
-                controls.posY = controls.posY - 0.3;
-            }else if(event.keyCode == 68){
-                // D
-                controls.posY = controls.posY + 0.3; 
-            }else if(event.keyCode == 87){
-                // W
-                controls.posX = controls.posX - 0.3;
-            }else if(event.keyCode == 83){
-                // S
-                controls.posX = controls.posX + 0.3;
-            }else if(event.keyCode == 38){
-                // UP
-                controls.shininess = controls.shininess + 10;
-            }else if(event.keyCode == 40){
-                // DOWN
-                controls.shininess = controls.shininess - 10;
-            }
-        });
-    
-    }
+    //     document.addEventListener('keydown', function(event) {
+    //         if(event.keyCode == 65){
+    //             // A
+    //             controls.posY = controls.posY - 0.3;
+    //         }else if(event.keyCode == 68){
+    //             // D
+    //             controls.posY = controls.posY + 0.3; 
+    //         }else if(event.keyCode == 87){
+    //             // W
+    //             controls.posX = controls.posX - 0.3;
+    //         }else if(event.keyCode == 83){
+    //             // S
+    //             controls.posX = controls.posX + 0.3;
+    //         }else if(event.keyCode == 38){
+    //             // UP
+    //             controls.shininess = controls.shininess + 10;
+    //         }else if(event.keyCode == 40){
+    //             // DOWN
+    //             controls.shininess = controls.shininess - 10;
+    //         }
+    //     });
+    // }
 }
