@@ -55,7 +55,7 @@ function getControls(){
     return controls;
 }
 
-async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
+async function main(objIndex, gl, meshProgramInfo, canvas) {
 
     const objHref = stringIntro + objArray[objIndex]; 
     const response = await fetch(objHref);
@@ -172,7 +172,6 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
     let zNear = radius / 100;
     let zFar = radius + 30; // radius + max(D)
     let lightPosVector = [0.0, 8.0, 10.0]; // standard value for index and tab pages
-    let diffuseVector = [1.0, 1.0, 1.0]; // standard value for index and tab pages
 
     if(renderStatus == 3){
         lightPosVector = [0, 0, -radius];
@@ -188,6 +187,10 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
             time = time * 4;
         }
 
+        if(renderStatus == 4){
+            controls.D = 10;
+        }
+
         webglUtils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.enable(gl.DEPTH_TEST);
@@ -196,7 +199,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
         const up = [0, 1, 0];
-        if(freeMoving == true){
+        if(renderStatus == 3 | renderStatus == 4){
             cameraPosition = [
                 (radius/1.5 + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
                 (radius/1.5 + controls.D) * Math.sin(controls.PHI),

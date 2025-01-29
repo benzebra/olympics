@@ -11,10 +11,9 @@ if(!gl){
 
 const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-main(index, gl, meshProgramInfo, true, canvas);
+main(index, gl, meshProgramInfo, canvas);
 
 setRenderStatus(3, gl)
-
 
 const gui = new dat.GUI();
 gui.name = "Controls";

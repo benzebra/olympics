@@ -1,4 +1,4 @@
-const urlRes = "/olympics/res/articles/";
+const urlRes = "./res/articles/";
 
 let canvas = document.getElementById("about-canvas");
 gl = canvas.getContext("webgl");
@@ -9,6 +9,8 @@ if(!gl){
 
 const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-main(21, gl, meshProgramInfo, true, canvas);
+main(21, gl, meshProgramInfo, canvas);
+
+setRenderStatus(4, gl)
 
 loadContent(urlRes + "me" + ".html");
