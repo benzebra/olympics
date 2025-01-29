@@ -1,4 +1,4 @@
-const urlRes = "/res/articles/";
+const urlRes = "/olympics/res/articles/";
 const urlParams = new URLSearchParams(window.location.search);
 const index = urlParams.get("index");
 
@@ -18,15 +18,15 @@ const gui = new dat.GUI();
 gui.name = "Controls";
 // gui.closed = true;
 // gui.autoPlace = true;
-gui.add(controls, "posX", 	    0,		    10,             1);
-gui.add(controls, "posY", 	    0, 		    10, 	        1);
-gui.add(controls, "D", 		    0, 		    30, 	        1);
-gui.add(controls, "THETA", 	    0, 	        2*Math.PI, 	    0.1);
-gui.add(controls, "PHI", 	    -Math.PI/2, Math.PI/2-0.1, 	0.1);
-gui.add(controls, "shininess", 	40, 	    200, 	        5);
-gui.add(controls, "Ka", 	    0, 	        1, 	            0.1);
-gui.add(controls, "Kd", 	    0, 	        1, 	            0.1);
-gui.add(controls, "Ks", 	    0, 	        1, 	            0.1);
+gui.add(controls, "posX", 	    0,		            10,             1);
+gui.add(controls, "posY", 	    0, 		            10, 	        1);
+gui.add(controls, "D", 		    0, 		            30, 	        1);
+gui.add(controls, "THETA", 	    0, 	                2*Math.PI, 	    0.1);
+gui.add(controls, "PHI", 	    -Math.PI/2+0.1,     Math.PI/2-0.1, 	0.1);
+gui.add(controls, "shininess", 	40, 	            200, 	        5);
+gui.add(controls, "Ka", 	    0, 	                1, 	            0.1);
+gui.add(controls, "Kd", 	    0, 	                1, 	            0.1);
+gui.add(controls, "Ks", 	    0, 	                1, 	            0.1);
 
 
 function handleDatGuiVisibility() {
@@ -38,13 +38,13 @@ function handleDatGuiVisibility() {
     }
 }
 
-function loadArticle(i) {
-    content = fetch(urlRes + i + ".html");
-    content.then(response => response.text()).then(text => {
-        document.getElementById("article").innerHTML = text;
-    });
-}
+// function loadArticle(i) {
+//     content = fetch(urlRes + i + ".html");
+//     content.then(response => response.text()).then(text => {
+//         document.getElementById("article").innerHTML = text;
+//     });
+// }
 
 handleDatGuiVisibility()
 
-loadArticle(index)
+loadContent(urlRes + index + ".html")
