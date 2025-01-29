@@ -23,9 +23,9 @@ gui.add(controls, "PHI", 	    -Math.PI/2+0.1,     Math.PI/2-0.1, 	0.1);
 gui.add(controls, "Ka", 	    0, 	                1, 	            0.1);
 gui.add(controls, "Kd", 	    0, 	                1, 	            0.1);
 gui.add(controls, "Ks", 	    0, 	                1, 	            0.1);
-gui.add(controls, "xLight", 	-20, 	            20, 	        1);
-gui.add(controls, "yLight", 	-20, 	            20, 	        1);
-gui.add(controls, "zLight", 	-20, 	            20, 	        1);
+gui.add(controls, "xLight", 	-100, 	            100, 	        1);
+gui.add(controls, "yLight", 	-100, 	            100, 	        1);
+gui.add(controls, "zLight", 	-100, 	            100, 	        1);
 
 
 function handleDatGuiVisibility() {
