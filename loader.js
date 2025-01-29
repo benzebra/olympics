@@ -255,9 +255,9 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         const up = [0, 1, 0];
         if(renderStatus == 3 | renderStatus == 4){
             cameraPosition = [
-                (radius/1 + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
-                (radius/1 + controls.D) * Math.sin(controls.PHI),
-                (radius/1 + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
+                (radius + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
+                (radius + controls.D) * Math.sin(controls.PHI),
+                (radius + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
               ];
         }
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
@@ -265,6 +265,8 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
 
         if(renderStatus == 3){
             lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
+        }else if(renderStatus == 4){
+            lightPosVector = [0.0, 8.0, 10.0];
         }
 
         const sharedUniforms = {
