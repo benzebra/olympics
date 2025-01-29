@@ -11,13 +11,13 @@ for(let i=0; i<canvas.length; i++){
 
     const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-    main(i, gl, meshProgramInfo, false, canvas[i], 0);
+    main(i, gl, meshProgramInfo, false, canvas[i]);
 
     canvas[i].addEventListener("mouseover", function(event){
         console.log("Mouse over");
 
         // set the render status to spinning
-        setRenderStatus(1, gl);
+        setRenderStatus(2, gl);
         // main(i, gl, meshProgramInfo, false, canvas[i]);
     });
 
@@ -29,3 +29,4 @@ for(let i=0; i<canvas.length; i++){
         // main(i, gl, meshProgramInfo, false, canvas[i]);
     });
 }
+

@@ -439,6 +439,10 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
     function render(time) {
         time *= 0.001;  // convert to seconds
 
+        if(renderStatus == 2){
+            time = time * 4;
+        }
+
         webglUtils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.enable(gl.DEPTH_TEST);
@@ -474,7 +478,7 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
         webglUtils.setUniforms(meshProgramInfo, sharedUniforms);
 
         let u_world;
-        if(renderStatus == 1 && gl == glToMove){
+        if((renderStatus == 1 && gl == glToMove)||(renderStatus == 2 && gl == glToMove)){
             u_world = m4.yRotation(time);
         }else{
             u_world = m4.identity();
