@@ -9,5 +9,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd /Users/filippobrajucha/Developer/olympics/res/models/blend/textures/07_-_Default_baseColor.png
-map_Bump -bm 1.000000 /Users/filippobrajucha/Developer/olympics/res/models/blend/textures/07_-_Default_normal.png
+map_Kd textures/07_-_Default_baseColor.png
+map_Bump -bm 1.000000 textures/07_-_Default_normal.png

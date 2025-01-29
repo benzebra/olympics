@@ -14,15 +14,11 @@ for(let i=0; i<canvas.length; i++){
     main(i, gl, meshProgramInfo, canvas[i]);
 
     canvas[i].addEventListener("mouseover", function(event){
-        console.log("Mouse over");
-
         // set the render status to spinning
         setRenderStatus(2, gl);
     });
 
     canvas[i].addEventListener("mouseout", function(event){
-        console.log("Mouse out");
-
         // set the render status to not spinning
         setRenderStatus(0, gl);
     });

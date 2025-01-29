@@ -44,7 +44,57 @@ let objArray = [
     "medal_me/medal_me.obj",
 ];
 
-let renderStatus = 0
+let renderStatus = 0;
+let numMaterials = 0;
+let loadingStatus = 0;
+
+function setNumMaterials(num) {
+    numMaterials = num;
+}
+
+function getNumMaterials() {
+    return numMaterials;
+}
+
+function setLoadingStatus(index) {
+    loadingStatus = index/getNumMaterials();
+}
+
+function getLoadingStatus() {
+    return loadingStatus;
+}
+// function createLoadingBar() {
+//     const loadingBarContainer = document.createElement('div');
+//     loadingBarContainer.style.position = 'fixed';
+//     loadingBarContainer.style.top = '10px';
+//     loadingBarContainer.style.left = '50%';
+//     loadingBarContainer.style.transform = 'translateX(-50%)';
+//     loadingBarContainer.style.width = '80%';
+//     loadingBarContainer.style.height = '20px';
+//     loadingBarContainer.style.backgroundColor = '#ccc';
+//     loadingBarContainer.style.borderRadius = '10px';
+//     loadingBarContainer.style.overflow = 'hidden';
+//     loadingBarContainer.style.zIndex = '1000';
+
+//     const loadingBar = document.createElement('div');
+//     loadingBar.style.height = '100%';
+//     loadingBar.style.width = '0%';
+//     loadingBar.style.backgroundColor = '#4caf50';
+//     loadingBar.style.borderRadius = '10px';
+
+//     loadingBarContainer.appendChild(loadingBar);
+//     document.body.appendChild(loadingBarContainer);
+
+//     return loadingBar;
+// }
+
+// const loadingBar = createLoadingBar();
+
+// function updateLoadingBar() {
+//     loadingBar.style.width = `${getLoadingStatus() * 100}%`;
+// }
+
+// setInterval(updateLoadingBar, 100);
 
 function setRenderStatus(status, gl){
     renderStatus = status;
@@ -54,6 +104,7 @@ function setRenderStatus(status, gl){
 function getControls(){
     return controls;
 }
+
 
 async function main(objIndex, gl, meshProgramInfo, canvas) {
 
@@ -68,6 +119,7 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         return await response.text();
     }));
     const materials = parseMTL(matTexts.join('\n'));
+    setNumMaterials(Object.values(materials).length);
 
     const textures = {
         defaultWhite: create1PixelTexture(gl, [255, 255, 255, 255]),
@@ -87,6 +139,9 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
             }
             material[key] = texture;
         });
+
+        const materialIndex = Object.values(materials).indexOf(material);
+        setLoadingStatus(materialIndex + 1);
     }
 
     const defaultMaterial = {
@@ -154,7 +209,6 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
     }
 
     const extents = getGeometriesExtents(obj.geometries);
-    console.log(extents);
     const range = m4.subtractVectors(extents.max, extents.min);
     const objOffset = m4.scaleVector(
         m4.addVectors(
@@ -201,9 +255,9 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         const up = [0, 1, 0];
         if(renderStatus == 3 | renderStatus == 4){
             cameraPosition = [
-                (radius/1.5 + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
-                (radius/1.5 + controls.D) * Math.sin(controls.PHI),
-                (radius/1.5 + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
+                (radius/1 + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
+                (radius/1 + controls.D) * Math.sin(controls.PHI),
+                (radius/1 + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
               ];
         }
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);

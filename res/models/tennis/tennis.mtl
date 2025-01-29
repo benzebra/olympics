@@ -9,8 +9,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd /Users/filippobrajucha/Developer/olympics/res/models/blend/tennis_shd_baseColor.jpeg
-map_Bump /Users/filippobrajucha/Developer/olympics/res/models/blend/branded_tennis_shd_metallicRoughness.png
+map_Kd textures/tennis_shd_baseColor.jpeg
+map_Bump textures/branded_tennis_shd_metallicRoughness.png
 
 newmtl tenniswhite_shd.003
 Ns 562.500000
