@@ -9,12 +9,12 @@ p{
  } */
  @font-face {
     font-family: 'Olympic Headline';
-    src: url('/olympics/fonts/OlympicHeadline-Regular.eot');
+    src: url('./fonts/OlympicHeadline-Regular.eot');
     src: local('Olympic Headline'), local('OlympicHeadline-Regular'),
-        url('/olympics/fonts/OlympicHeadline-Regular.eot?#iefix') format('embedded-opentype'),
-        url('/olympics/fonts/OlympicHeadline-Regular.woff2') format('woff2'),
-        url('/olympics/fonts/OlympicHeadline-Regular.woff') format('woff'),
-        url('/olympics/fonts/OlympicHeadline-Regular.ttf') format('truetype');
+        url('./fonts/OlympicHeadline-Regular.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/OlympicHeadline-Regular.woff2') format('woff2'),
+        url('./fonts/OlympicHeadline-Regular.woff') format('woff'),
+        url('./fonts/OlympicHeadline-Regular.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -22,12 +22,12 @@ p{
 
 @font-face {
     font-family: 'Olympic Headline';
-    src: url('/olympics/fonts/OlympicHeadline-RegularItalic.eot');
+    src: url('./fonts/OlympicHeadline-RegularItalic.eot');
     src: local('Olympic Headline Regular Italic'), local('OlympicHeadline-RegularItalic'),
-        url('/olympics/fonts/OlympicHeadline-RegularItalic.eot?#iefix') format('embedded-opentype'),
-        url('/olympics/fonts/OlympicHeadline-RegularItalic.woff2') format('woff2'),
-        url('/olympics/fonts/OlympicHeadline-RegularItalic.woff') format('woff'),
-        url('/olympics/fonts/OlympicHeadline-RegularItalic.ttf') format('truetype');
+        url('./fonts/OlympicHeadline-RegularItalic.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/OlympicHeadline-RegularItalic.woff2') format('woff2'),
+        url('./fonts/OlympicHeadline-RegularItalic.woff') format('woff'),
+        url('./fonts/OlympicHeadline-RegularItalic.ttf') format('truetype');
     font-weight: bold;
     font-style: italic;
     font-display: swap;
@@ -50,4 +50,9 @@ p{
 #about-canvas{
     width: 100%;
     height: 80vh;
+}
+
+#canvas-first{
+    width: 100vw;
+    height: 100vh;
 }

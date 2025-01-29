@@ -1,4 +1,4 @@
-canvas = document.getElementById("canvas");
+canvas = document.getElementById("canvas-first");
 gl = canvas.getContext("webgl");
 
 let objIndex = 0;

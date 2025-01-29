@@ -1,4 +1,4 @@
-const urlRes = "/olympics/res/articles/";
+const urlRes = "./res/articles/";
 const urlParams = new URLSearchParams(window.location.search);
 const index = urlParams.get("index");
 
