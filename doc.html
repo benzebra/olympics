@@ -18,16 +18,16 @@
                 border: 1px solid black;
                 padding: 8px;
             }
-            body, h1, h2, h3, h4{
+            /* body, h1, h2, h3, h4{
                 font-family: 'Times New Roman', Times, serif;
-            }
+            } */
         </style>
 
         <link rel="stylesheet" type="text/css" href="style/style.css">
 
     </head>
-    <body class="overflow-hidden">
-        <nav class="display-4 navbar navbar-expand-xxl py-3 personalized-bg position-absolute w-100">
+    <body>
+        <nav class="display-4 navbar navbar-expand-xxl py-3 personalized-bg position-fixed w-100 top-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.html">
                     <img src="res/Olympics_logo.svg" alt="Olympics 3D Paris 2024" width="150" height="80">
@@ -55,71 +55,66 @@
                 </div>
             </div>
         </nav>
-
-        <h1> Documentazione </h1>
-
-
-        <h2> Introduzione </h2>
-        <p> Documentazione del progetto di Computer Graphics 2023/2024, C.d.S. Informatica, Università di Bologna. </p>
-        <p> Il progetto sviuluppato si chiama <b>olympics</b> e si tratta di un medagliere della Nazionale Italiana alle Olimpiadi di Parigi 2024.</p>
-        <p> </p>
-
-
-        <h2>Descrizione</h2>
-        <h3>Struttura</h3>
-        <h3>Librerie</h3>
-        <!-- dat.gui, webglfundamentals, functions, m4, bootstrap -->
-        <h3>Comandi</h3>
-        <p> Nelle scene dove è possibile accedere ai comandi, questi vengono implementati in 2 modi: </p>
-        <h4> dat.gui </h4>
-        Viene utilizzata la libreria dat.gui per la creazione di un pannello di controllo che permette di modificare i parametri della scena.
-        <h4> Tastiera e Mouse </h4>
-        Viene utilizzata la tastiera per la gestione di alcuni comandi, come la rotazione della camera o la visualizzazione di informazioni aggiuntive.
-        Mappatura tasti:
-        <table>
-            <thead>
-                <tr>
-                    <th>Comando</th>
-                    <th>Descrizione</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>W</td>
-                    <td>Muove la camera in avanti</td>
-                </tr>
-                <tr>
-                    <td>S</td>
-                    <td>Muove la camera indietro</td>
-                </tr>
-                <tr>
-                    <td>A</td>
-                    <td>Muove la camera a sinistra</td>
-                </tr>
-                <tr>
-                    <td>D</td>
-                    <td>Muove la camera a destra</td>
-                </tr>
-                <tr>
-                    <td>Q</td>
-                    <td>Ruota la camera in senso antiorario</td>
-                </tr>
-                <tr>
-                    <td>E</td>
-                    <td>Ruota la camera in senso orario</td>
-                </tr>
-            </tbody>
-        </table>
         
-        <h2> Scelte Effettuate </h2>
-        <p> Gira la camera e non l'oggetto </p>
-
-        <h2> Funzionalità WebGL </h2>
-
-        <h2> Particolarità </h2>
-        <p> Gli obj medaglie nella tab page sono state sviluppate interamente da me in Blender, modellando in 3D a partire da un cilindro e applicando successivamente i materiali e le textures. </p>
-
-        <h2>Lavori Futuri</h2>
-        <p> Aggiungere medaglie d'argento e di bronzo </p>
+        <div class="container" style="margin-top: 150px;">
+            <h1> Documentazione </h1>
+            <h2> Introduzione </h2>
+            <p> Documentazione del progetto di Computer Graphics 2023/2024, C.d.S. Informatica, Università di Bologna. </p>
+            <p> Il progetto sviuluppato si chiama <b>olympics</b> e si tratta di un medagliere della Nazionale Italiana alle Olimpiadi di Parigi 2024.</p>
+            <p> </p>
+            <h2>Descrizione</h2>
+            <h3>Struttura</h3>
+            <h3>Librerie</h3>
+            <!-- dat.gui, webglfundamentals, functions, m4, bootstrap -->
+            <h3>Comandi</h3>
+            <p> Nelle scene dove è possibile accedere ai comandi, questi vengono implementati in 2 modi: </p>
+            <h4> dat.gui </h4>
+            Viene utilizzata la libreria dat.gui per la creazione di un pannello di controllo che permette di modificare i parametri della scena.
+            <h4> Tastiera e Mouse </h4>
+            Viene utilizzata la tastiera per la gestione di alcuni comandi, come la rotazione della camera o la visualizzazione di informazioni aggiuntive.
+            Mappatura tasti:
+            <table>
+                <thead>
+                    <tr>
+                        <th>Comando</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>W</td>
+                        <td>Muove la camera in avanti</td>
+                    </tr>
+                    <tr>
+                        <td>S</td>
+                        <td>Muove la camera indietro</td>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>Muove la camera a sinistra</td>
+                    </tr>
+                    <tr>
+                        <td>D</td>
+                        <td>Muove la camera a destra</td>
+                    </tr>
+                    <tr>
+                        <td>Q</td>
+                        <td>Ruota la camera in senso antiorario</td>
+                    </tr>
+                    <tr>
+                        <td>E</td>
+                        <td>Ruota la camera in senso orario</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2> Scelte Effettuate </h2>
+            <p> Gira la camera e non l'oggetto </p>
+            <h2> Funzionalità WebGL </h2>
+            <h2> Particolarità </h2>
+            <p> Gli obj medaglie nella tab page sono state sviluppate interamente da me in Blender, modellando in 3D a partire da un cilindro e applicando successivamente i materiali e le textures. </p>
+            <h2>Lavori Futuri</h2>
+            <p> Aggiungere medaglie d'argento e di bronzo </p>
+        </div>
     </body>
 </html>
