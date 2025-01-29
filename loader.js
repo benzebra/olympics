@@ -4,10 +4,12 @@ var controls = {
     D: 0,
     THETA: Math.PI,
     PHI: 0,
-    shininess: 100,
     Ka: 0.1,
     Kd: 0.9,
     Ks: 0.7,
+    xLight: 0,
+    yLight: 0,
+    zLight: 0,
 }
 
 let drag = false;
@@ -170,6 +172,14 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
     let zNear = radius / 100;
     let zFar = radius + 30; // radius + max(D)
     let lightPosVector = [0.0, 8.0, 10.0]; // standard value for index and tab pages
+    let diffuseVector = [1.0, 1.0, 1.0]; // standard value for index and tab pages
+
+    if(renderStatus == 3){
+        lightPosVector = [0, 0, -radius];
+        controls.xLight = lightPosVector[0];
+        controls.yLight = lightPosVector[1];
+        controls.zLight = lightPosVector[2];
+    }
 
     function render(time) {
         time *= 0.001;  // convert to seconds
@@ -196,11 +206,15 @@ async function main(objIndex, gl, meshProgramInfo, freeMoving, canvas) {
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
         const view = m4.inverse(camera);
 
+        if(renderStatus == 3){
+            lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
+        }
+
         const sharedUniforms = {
             u_lightDirection: m4.normalize([-1, 3, 5]),
             u_view: view,
             u_projection: projection,
-            shininessAmbient: controls.shininess,
+            shininessAmbient: 100,
             Ka: controls.Ka,
             Kd: controls.Kd,
             Ks: controls.Ks,

@@ -18,7 +18,6 @@ for(let i=0; i<canvas.length; i++){
 
         // set the render status to spinning
         setRenderStatus(2, gl);
-        // main(i, gl, meshProgramInfo, false, canvas[i]);
     });
 
     canvas[i].addEventListener("mouseout", function(event){
@@ -26,7 +25,6 @@ for(let i=0; i<canvas.length; i++){
 
         // set the render status to not spinning
         setRenderStatus(0, gl);
-        // main(i, gl, meshProgramInfo, false, canvas[i]);
     });
 }
 

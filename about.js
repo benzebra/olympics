@@ -12,8 +12,3 @@ const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 main(21, gl, meshProgramInfo, true, canvas);
 
 loadContent(urlRes + "me" + ".html");
-
-// content = fetch(urlRes + "me" + ".html");
-// content.then(response => response.text()).then(text => {
-//     document.getElementById("article").innerHTML = text;
-// });

@@ -13,16 +13,20 @@ const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
 main(index, gl, meshProgramInfo, true, canvas);
 
+setRenderStatus(3, gl)
+
 
 const gui = new dat.GUI();
 gui.name = "Controls";
 gui.add(controls, "D", 		    0, 		            30, 	        1);
 gui.add(controls, "THETA", 	    0, 	                2*Math.PI, 	    0.1);
 gui.add(controls, "PHI", 	    -Math.PI/2+0.1,     Math.PI/2-0.1, 	0.1);
-gui.add(controls, "shininess", 	40, 	            200, 	        5);
 gui.add(controls, "Ka", 	    0, 	                1, 	            0.1);
 gui.add(controls, "Kd", 	    0, 	                1, 	            0.1);
 gui.add(controls, "Ks", 	    0, 	                1, 	            0.1);
+gui.add(controls, "xLight", 	-20, 	            20, 	        1);
+gui.add(controls, "yLight", 	-20, 	            20, 	        1);
+gui.add(controls, "zLight", 	-20, 	            20, 	        1);
 
 
 function handleDatGuiVisibility() {
