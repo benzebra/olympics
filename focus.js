@@ -28,15 +28,18 @@ gui.add(controls, "yLight", 	-100, 	            100, 	        1);
 gui.add(controls, "zLight", 	-100, 	            100, 	        1);
 
 
-function handleDatGuiVisibility() {
-    const guiContainer = document.getElementsByClassName('dg ac')[0];
+function handleGuiVisibility() {
+    const guiContainer = document.getElementsByClassName("dg ac")[0];
+    const modalGui = document.getElementById("modalGui");
     if (window.innerWidth <= 768) { // Adjust 768 to your breakpoint for mobile devices
-        guiContainer.style.display = 'none'; // Hide the GUI on mobile
+        guiContainer.style.display = "none"; // Hide the GUI on mobile
+        modalGui.style.display = "none"; // Show the modal button on mobile
     } else {
         guiContainer.style.display = ''; // Show the GUI on desktop
+        modalGui.style.display = ''; // Show the GUI on desktop
     }
 }
 
-handleDatGuiVisibility()
+handleGuiVisibility()
 
 loadContent(urlRes + index + ".html")

@@ -242,7 +242,7 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         }
 
         if(renderStatus == 4){
-            controls.D = 10;
+            controls.D = 6;
         }
 
         webglUtils.resizeCanvasToDisplaySize(gl.canvas);
@@ -266,7 +266,7 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         if(renderStatus == 3){
             lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
         }else if(renderStatus == 4){
-            lightPosVector = [0.0, 8.0, 10.0];
+            lightPosVector = [10.0, 8.0, -10.0];
         }
 
         const sharedUniforms = {
