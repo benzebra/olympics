@@ -39,7 +39,7 @@ let objArray = [
     "judo/judo.obj",
     "kayak/kayak.obj",
     "sword/sword.obj",
-    "swim_shrek/swim_shrek.obj",
+    "swim/swim.obj",
     // 21 about me
     "medal_me/medal_me.obj",
 ];
