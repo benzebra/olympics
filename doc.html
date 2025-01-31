@@ -18,6 +18,21 @@
                 border: 1px solid black;
                 padding: 8px;
             }
+            .collage {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .collage-3 {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            .img-to-fit {
+                width: 100%;
+                height: auto;
+            }
+
             /* body, h1, h2, h3, h4{
                 font-family: 'Times New Roman', Times, serif;
             } */
@@ -94,7 +109,7 @@
             <h2>1 Introduzione</h2>
             <p>Documentazione del progetto di Computer Graphics 2023/2024, C.d.S. Informatica, Università di Bologna.</p>
             <p>Il progetto sviluppato si chiama olympics e si tratta di un medagliere della Nazionale Italiana alle Olimpiadi di Parigi 2024.</p>
-            <p>L’idea è quella di raccogliere in un unico sito web i traguardi più importanti delle olimpiadi di Parigi 2024, utilizzando degli oggetti e modelli grafici per renderla più accattivante e interessante.</p>
+            <p>L'idea è quella di raccogliere in un unico sito web i traguardi più importanti delle olimpiadi di Parigi 2024, utilizzando degli oggetti e modelli grafici per renderla più accattivante e interessante.</p>
             <p>Nella pagina di focus viene visualizzato un breve articolo dove sono segnati i titolari delle vittorie con una piccola gallery e un oggetto renderizzato in 3D “caratteristico” di quello sport.</p>
 
             <h2>2 Descrizione</h2>
@@ -104,7 +119,7 @@
             <p>Lo stile utilizzato ricalca quello scelto dal CONI, bianco e blu (rgb(27, 33, 46)) come nel sito parigi2024.coni.it e come font viene utilizzato Olympic Headline.</p>
 
             <h3>2.1 Struttura</h3>
-            <p>L’organizzazione dell’applicativo è la seguente:</p>
+            <p>L'organizzazione dell'applicativo è la seguente:</p>
             <ul>
                 <li>index.html</li>
                 <li>tab.html</li>
@@ -116,86 +131,164 @@
             </ul>
             <p>La pagina 1 è accessibile da url, le pagine 2, 3, 4 sono accessibili da navbar partendo dalla 1, mentre la pagina “focus” viene visualizzata quando si clicca sulle canvas della pagina 2.</p>
             <p>Nella pagina 1 viene mostrato il logo delle Olimpiadi 2024 fisso al centro della canvas, anche la luce è fissa che lo illumina mentre gira.</p>
-            <p>Nella pagina 2 è presente una tabella con le 10 discipline dove la Nazionale Italiana ha ottenuto la medaglia d’oro, gli oggetti (le medaglie) partono da ferme e cambiano posizione nel tempo se viene triggerato l’evento mouseover della canvas specifica, ruotando. Anche in questa scena la luce è fissa e proveniente dallo stesso lato della camera. Le medaglie sono presenti nella directory res/models/medals, essa contiene tutti i file .obj e .mtl e anche tutte le immagini di texture che sono applicate nel centro della medaglia e sono i pittogrammi originali sviluppati per le Olimpiadi 2024.</p>
+            <p>Nella pagina 2 è presente una tabella con le 10 discipline dove la Nazionale Italiana ha ottenuto la medaglia d'oro, gli oggetti (le medaglie) partono da ferme e cambiano posizione nel tempo se viene triggerato l'evento mouseover della canvas specifica, ruotando. Anche in questa scena la luce è fissa e proveniente dallo stesso lato della camera. Le medaglie sono presenti nella directory res/models/medals, essa contiene tutti i file .obj e .mtl e anche tutte le immagini di texture che sono applicate nel centro della medaglia e sono i pittogrammi originali sviluppati per le Olimpiadi 2024.</p>
             <p>La pagina 3 contiene questa documentazione in formato html o pdf (scaricabile dal pulsante in basso a destra).</p>
             <p>La pagina 4 è un piccolo about me dove è presente un oggetto con la mia foto, alcune informazioni utili e contatti personali.</p>
-            <p>Nella pagina di focus viene renderizzato un articolo, il contenuto di questa pagina è dinamico, a seconda dell’oggetto selezionato nella tabella viene caricato nella canvas l’oggetto specifico di riferimento e, nella parte dell’articolo, quello specifico con le relative immagini (ogni articolo si può trovare sotto-forma di codice .html nella directory olympics/res/articles).</p>
+            <p>Nella pagina di focus viene renderizzato un articolo, il contenuto di questa pagina è dinamico, a seconda dell'oggetto selezionato nella tabella viene caricato nella canvas l'oggetto specifico di riferimento e, nella parte dell'articolo, quello specifico con le relative immagini (ogni articolo si può trovare sotto-forma di codice .html nella directory olympics/res/articles).</p>
+            <div class="collage">
+                <img class="img-to-fit" src="/res/doc/pc_pag1.png" alt="Photo 1">
+                <img class="img-to-fit" src="/res/doc/pc_pag2.png" alt="Photo 2">
+                <img class="img-to-fit" src="/res/doc/pc_pag3.png" alt="Photo 3">
+                <img class="img-to-fit" src="/res/doc/pc_focus.png" alt="Photo 4">
+            </div>
+            <p>Nella versione mobile non ci sono differenze per quanto riguarda la struttura del sito, se non per la navbar (fig. f) che viene ridotta ad un'icona e al pulsante in basso a destra nella pagina focus che non è presente. Ecco come cambia l'aspetto delle pagine mostrate sopra.</p>
+            <div class="collage-3">
+                <img class="img-to-fit" src="/res/doc/mobile_pag1.png" alt="Photo 1">
+                <img class="img-to-fit" src="/res/doc/mobile_pag2.png" alt="Photo 2">
+                <img class="img-to-fit" src="/res/doc/mobile_pag3.png" alt="Photo 3">
+                <img class="img-to-fit" src="/res/doc/mobile_focus1.png" alt="Photo 4">
+                <img class="img-to-fit" src="/res/doc/mobile_focus2.png" alt="Photo 5">
+                <img class="img-to-fit" src="/res/doc/mobile_navbar.png" alt="Photo 6">
+            </div>
 
             <h3>2.2 Librerie</h3>
-            <p>Per facilitare lo sviluppo dell’applicativo vengono utilizzate diverse librerie, più o meno complesse.</p>
+            <p>Per facilitare lo sviluppo dell'applicativo vengono utilizzate diverse librerie, più o meno complesse.</p>
             <p>Per quanto riguarda la parte di impaginazione, e in generale il frontend, vengono utilizzati Bootstrap e BootstrapIcon. Questi permettono di stilizzare in maniera facilitata i vari componenti del sito e gestire le media query.</p>
-            <p>Per la GUI viene utilizzata, come consigliato, la libreria dat.GUI che permette di sviluppare in modo semplice un’interfaccia di comando per l’utente.</p>
+            <p>Per la GUI viene utilizzata, come consigliato, la libreria dat.GUI che permette di sviluppare in modo semplice un'interfaccia di comando per l'utente.</p>
             <p>Per la renderizzazione degli oggetti 3D nelle canvas viene fatto largo uso delle librerie WebGLFundamentals e m4, queste facilitano di molto il lavoro con WebGL la prima e con i vari calcoli matriciali la seconda.</p>
             <p>Il codice sviluppato contiene alcune componenti illustrate nel sito di WebGLFundamentals.</p>
             <p>Nel codice sono presenti altre 2 librerie sviluppate da me che permettono di integrare i controlli alla canvas (controls.js) e di avere una serie di funzioni utili per la renderizzazione (functions.js) senza riempire troppo il codice del file loader.js.</p>
             <p>Nel file loader.js è contenuta la funzione render che è il core della renderizzazione, grazie a questa vengono costantemente aggiornate le canvas.</p>
 
             <h3>2.3 Comandi</h3>
-            <p>I comandi vengono utilizzati per spostare la vista nello spazio, proprio come se l’utente stesse usando una camera.</p>
+            <p>I comandi vengono utilizzati per spostare la vista nello spazio, proprio come se l'utente stesse usando una camera.</p>
             <p>D indica la distanza dal centro, mentre PHI e THETA sono i 2 angoli che regolano, rispettivamente, lo spostamento verticale e orizzontale.</p>
+            <img class="img-to-fit" src="/res/doc/vista.png"/>
             <p>I comandi si possono dare tramite GUI (vedi dat.GUI), mediante mouse e tastiera, come specificato di seguito oppure attraverso touch-screen (a seconda del dispositivo).</p>
             <p>Nella pagina focus viene renderizzato, con schermi non-piccoli, un modale attivabile tramite il pulsante in basso a destra con delle “istruzioni” sui tasti utili.</p>
 
             <h4>2.3.1 Dat.GUI</h4>
-            <p>La libreria dat.GUI mette a disposizione una GUI facile da usare e implementare, agisce direttamente sui valori utilizzati dalla funzione di render durante la renderizzazione dell’oggetto.</p>
-            <p>Un’altra feature molto comoda di questa libreria è la creazione di limiti per i valori in input che devono rientrare in un certo range.</p>
+            <p>La libreria dat.GUI mette a disposizione una GUI facile da usare e implementare, agisce direttamente sui valori utilizzati dalla funzione di render durante la renderizzazione dell'oggetto.</p>
+            <p>Un'altra feature molto comoda di questa libreria è la creazione di limiti per i valori in input che devono rientrare in un certo range.</p>
             <p>Nel mio caso viene sfruttata per modificare le seguenti variabili con i seguenti limiti:</p>
-            <ul>
-                <li>D: min 0, max 30</li>
-                <li>THETA: min 0, max 2*PI</li>
-                <li>PHI: min -PI/2, max PI/2</li>
-                <li>Ka, Kd, Ks: min 0, max 1</li>
-                <li>xLight, yLight, zLight: min -100, max 100</li>
-            </ul>
-            <p>La GUI sviluppata con questa libreria si trova all’interno del codice della pagina controls.js.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Var</th> <th>Min</th> <th>Max</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>D</td> <td>0</td> <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>THETA</td> <td>0</td> <td>2*PI</td>
+                    </tr>
+                    <tr>
+                        <td>PHI</td> <td>-PI/2</td> <td>PI/2</td>
+                    </tr>
+                    <tr>
+                        <td>Ka</td> <td>0</td> <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Kd</td> <td>0</td> <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Ks</td> <td>0</td> <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>xLight</td> <td>-100</td> <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>yLight</td> <td>-100</td> <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>zLight</td> <td>-100</td> <td>100</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>La GUI sviluppata con questa libreria si trova all'interno del codice della pagina controls.js.</p>
 
             <h4>2.3.2 Tastiera</h4>
             <p>La tastiera è un altro strumento di input, ci sono delle hotkey che vengono utilizzate per cambiare alcuni parametri che possono essere modificati anche con la GUI, eccoli qua di seguito:</p>
-            <ul>
-                <li>A o ArrowLeft: THETA +</li>
-                <li>D o ArrowRight: THETA -</li>
-                <li>W o ArrowUp: PHI +</li>
-                <li>S o ArrowDown: PHI -</li>
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th> <th>Var</th> <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A or ArrowLeft</td> <td>THETA</td> <td>+</td>
+                    </tr>
+                    <tr>
+                        <td>D or ArrowRight</td> <td>THETA</td> <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>W or ArrowUp</td> <td>PHI</td> <td>+</td>
+                    </tr>
+                    <tr>
+                        <td>S or ArrowDown</td> <td>PHI</td> <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
             <p>I valori modificati tramite tastiera aggiornano i valori nella GUI in real-time rendendo utilizzabile anche una “combinazione” dei due sistemi di comando.</p>
             <p>Inoltre i limiti impostati nella GUI sopra descritta sono gli stessi che si devono rispettare nella modifica da tastiera.</p>
 
             <h4>2.3.3 Mouse</h4>
             <p>Tramite un meccanismo di premi e trascina è possibile utilizzare anche il mouse sulla canvas, la posizione del cursore indica le variazioni dei parametri THETA e PHI.</p>
             <p>Con il mouse è anche possibile utilizzare la rotella per aumentare o diminuire la distanza della camera come fosse uno zoom.</p>
-            <p>Da sottolineare il fatto che si può effettuare lo zoom-in (quindi diminuire la distanza) entro un certo limite che viene calcolato a partire dagli extents dell’oggetto, viene mantenuto, quindi, sempre un certo raggio di distanza per non creare problemi con la renderizzazione.</p>
+            <p>Da sottolineare il fatto che si può effettuare lo zoom-in (quindi diminuire la distanza) entro un certo limite che viene calcolato a partire dagli extents dell'oggetto, viene mantenuto, quindi, sempre un certo raggio di distanza per non creare problemi con la renderizzazione.</p>
 
             <h4>2.3.4 Touch-Screen</h4>
             <p>La gestione dei comandi avviene anche per schermi piccoli (e quindi verosimilmente touch-screen), infatti tramite le callback ontouchstart, ontouchend, ontouchmove, touchcancel vengono gestiti gli eventi di pressione dello schermo come se fosse utilizzato il mouse.</p>
 
             <h2>3 Funzionalità WebGL</h2>
-            <p>Viene fatto largo uso di WebGL, a partire dalla prima pagina dove è presente nel centro una canvas, nella seconda pagina vengono utilizzate ben 10 canvas che contengono un oggetto e la pagina focus che contiene un’altra canvas, come anche la pagina di about.</p>
-            <p>Le funzionalità sono differenti, la pagina iniziale e quella della tabella sono fisse, l’utente non può interagire. Per dispositivi non touch è sviluppata anche un’animazione nella pagina della tabella, essa fa sì che la posizione dell’oggetto (la medaglia) cambi nel caso in cui si passi (e si rimanga) sopra con il mouse.</p>
-            <p>Sostanzialmente la medaglia ruota sul suo asse verticale, l’illuminazione è fissa e frontale in modo da tenere l’oggetto illuminato.</p>
-            <p>Nella pagina di focus l’utente è più libero di muovere e orientare la camera nello spazio, così può osservare meglio gli oggetti renderizzati. In questa pagina l’utente può anche spostare la posizione della luce, così da scegliere l’illuminazione più corretta per l’oggetto nella scena.</p>
+            <p>Viene fatto largo uso di WebGL, a partire dalla prima pagina dove è presente nel centro una canvas, nella seconda pagina vengono utilizzate ben 10 canvas che contengono un oggetto e la pagina focus che contiene un'altra canvas, come anche la pagina di about.</p>
+            <p>Le funzionalità sono differenti, la pagina iniziale e quella della tabella sono fisse, l'utente non può interagire. Per dispositivi non touch è sviluppata anche un'animazione nella pagina della tabella, essa fa sì che la posizione dell'oggetto (la medaglia) cambi nel caso in cui si passi (e si rimanga) sopra con il mouse.</p>
+            <p>Sostanzialmente la medaglia ruota sul suo asse verticale, l'illuminazione è fissa e frontale in modo da tenere l'oggetto illuminato.</p>
+            <p>Nella pagina di focus l'utente è più libero di muovere e orientare la camera nello spazio, così può osservare meglio gli oggetti renderizzati. In questa pagina l'utente può anche spostare la posizione della luce, così da scegliere l'illuminazione più corretta per l'oggetto nella scena.</p>
             <p>Vengono utilizzate le funzioni parseObj e parseMaterial messe a disposizione da WebGLFundamentals.</p>
             <p>Mentre per la parte di luci si fa riferimento a ciò che si è visto a lezione e alla sezione “Lighting” di WebGLFundamentals.</p>
 
             <h3>3.1 Pipeline di Caricamento</h3>
             <p>Dagli script associati ad ogni file .html viene richiamata la funzione main dello script loader.js. Essa prende in input:</p>
             <ul>
-                <li>objIndex - indice grazie al quale viene recuperato l’url del file obj</li>
+                <li>objIndex - indice grazie al quale viene recuperato l'url del file obj</li>
                 <li>gl - context della canvas</li>
                 <li>meshProgramInfo - il programma utilizzato da quel context (creato con gl, fragment shader e vertex shader, quindi sostanzialmente sono i riferimenti della canvas e i metodi grazie ai quali riesce a plottare gli oggetti nello spazio 3D e colorarli)</li>
             </ul>
-            <p>Dopo il caricamento del file vengono eseguite delle funzioni e dei calcoli per capire le dimensioni e le caratteristiche dell’oggetto, vengono inizializzate le matrici della camera e della luce.</p>
-            <p>A seconda di vari parametri come il renderStatus, vengono attivate o meno delle funzionalità, come la possibilità di muovere l’oggetto liberamente o la camera fissa, in particolare:</p>
-            <ul>
-                <li>Status 0 - tab: Camera fissa, luce fissa, oggetto fisso</li>
-                <li>Status 1 - index: Camera fissa, luce fissa, oggetto gira lentamente</li>
-                <li>Status 2 - tab: Camera fissa, luce fissa, oggetto gira velocemente</li>
-                <li>Status 3 - focus: Camera modificabile da utente, oggetto fisso, luce mobile</li>
-                <li>Status 4 - about: Camera modificabile da utente, oggetto fisso, luce fissa</li>
-            </ul>
+            <p>Dopo il caricamento del file vengono eseguite delle funzioni e dei calcoli per capire le dimensioni e le caratteristiche dell'oggetto, vengono inizializzate le matrici della camera e della luce.</p>
+            <p>A seconda di vari parametri come il renderStatus, vengono attivate o meno delle funzionalità, come la possibilità di muovere l'oggetto liberamente o la camera fissa, in particolare:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th> <th>Page</th> <th>Props</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td> <td>tab</td> <td>Camera fissa, luce fissa, oggetto fisso</td>
+                    </tr>
+                    <tr>
+                        <td>1</td> <td>index</td> <td>Camera fissa, luce fissa, oggetto gira lentamente</td>
+                    </tr>
+                    <tr>
+                        <td>2</td> <td>tab</td> <td>Camera fissa, luce fissa, oggetto gira velocemente</td>
+                    </tr>
+                    <tr>
+                        <td>3</td> <td>focus</td> <td>Camera modificabile da utente, oggetto fisso, luce mobile</td>
+                    </tr>
+                    <tr>
+                        <td>4</td> <td>about</td> <td>Camera modificabile da utente, oggetto fisso, luce fissa</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <h2>4 Particolarità</h2>
             <p>Una particolarità interessante del progetto sviluppato è che le medaglie visualizzate nella pagina “tab.html” e nella pagina “about.html” sono sviluppate da me in Blender from scratch, partendo proprio da un cilindro, applicando trasformazioni sui volumi e i diversi materiali e texture una volta ultimato.</p>
-
+            <img class="img-to-fit" src="/res/doc/blender.webp"/>
+             
             <h2>5 Bibliografia</h2>
             <ul>
                 <li><a href="https://webglfundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html">https://webglfundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html</a></li>
