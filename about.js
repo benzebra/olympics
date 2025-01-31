@@ -9,7 +9,7 @@ if(!gl){
 
 const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-main(21, gl, meshProgramInfo, canvas);
+main(21, gl, meshProgramInfo);
 
 setRenderStatus(4, gl)
 

@@ -11,7 +11,7 @@ for(let i=0; i<canvas.length; i++){
 
     const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-    main(i, gl, meshProgramInfo, canvas[i]);
+    main(i, gl, meshProgramInfo);
 
     canvas[i].addEventListener("mouseover", function(event){
         // set the render status to spinning

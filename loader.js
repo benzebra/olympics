@@ -1,4 +1,9 @@
 let stringIntro = "res/models/";
+let renderStatus = 0;
+let numMaterials = 0;
+let loadingStatus = 0;
+let drag = false;
+let old_x, old_y;
 
 var controls = {
     D: 0,
@@ -11,9 +16,6 @@ var controls = {
     yLight: 0,
     zLight: 0,
 }
-
-let drag = false;
-let old_x, old_y;
 
 let objArray = [
     // 0-9 MEDALS
@@ -44,58 +46,6 @@ let objArray = [
     "medal_me/medal_me.obj",
 ];
 
-let renderStatus = 0;
-let numMaterials = 0;
-let loadingStatus = 0;
-
-function setNumMaterials(num) {
-    numMaterials = num;
-}
-
-function getNumMaterials() {
-    return numMaterials;
-}
-
-function setLoadingStatus(index) {
-    loadingStatus = index/getNumMaterials();
-}
-
-function getLoadingStatus() {
-    return loadingStatus;
-}
-// function createLoadingBar() {
-//     const loadingBarContainer = document.createElement('div');
-//     loadingBarContainer.style.position = 'fixed';
-//     loadingBarContainer.style.top = '10px';
-//     loadingBarContainer.style.left = '50%';
-//     loadingBarContainer.style.transform = 'translateX(-50%)';
-//     loadingBarContainer.style.width = '80%';
-//     loadingBarContainer.style.height = '20px';
-//     loadingBarContainer.style.backgroundColor = '#ccc';
-//     loadingBarContainer.style.borderRadius = '10px';
-//     loadingBarContainer.style.overflow = 'hidden';
-//     loadingBarContainer.style.zIndex = '1000';
-
-//     const loadingBar = document.createElement('div');
-//     loadingBar.style.height = '100%';
-//     loadingBar.style.width = '0%';
-//     loadingBar.style.backgroundColor = '#4caf50';
-//     loadingBar.style.borderRadius = '10px';
-
-//     loadingBarContainer.appendChild(loadingBar);
-//     document.body.appendChild(loadingBarContainer);
-
-//     return loadingBar;
-// }
-
-// const loadingBar = createLoadingBar();
-
-// function updateLoadingBar() {
-//     loadingBar.style.width = `${getLoadingStatus() * 100}%`;
-// }
-
-// setInterval(updateLoadingBar, 100);
-
 function setRenderStatus(status, gl){
     renderStatus = status;
     glToMove = gl;
@@ -106,8 +56,7 @@ function getControls(){
 }
 
 
-async function main(objIndex, gl, meshProgramInfo, canvas) {
-
+async function main(objIndex, gl, meshProgramInfo) {
     const objHref = stringIntro + objArray[objIndex]; 
     const response = await fetch(objHref);
     const text = await response.text();
@@ -119,7 +68,6 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         return await response.text();
     }));
     const materials = parseMTL(matTexts.join('\n'));
-    setNumMaterials(Object.values(materials).length);
 
     const textures = {
         defaultWhite: create1PixelTexture(gl, [255, 255, 255, 255]),
@@ -139,9 +87,6 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
             }
             material[key] = texture;
         });
-
-        const materialIndex = Object.values(materials).indexOf(material);
-        setLoadingStatus(materialIndex + 1);
     }
 
     const defaultMaterial = {
@@ -164,11 +109,9 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
             data.color = { value: [1, 1, 1, 1] };
         }
 
-        // generate tangents if we have the data to do so.
         if (data.texcoord && data.normal) {
             data.tangent = generateTangents(data.position, data.texcoord);
         } else {
-            // There are no tangents
             data.tangent = { value: [1, 0, 0] };
         }
 
@@ -224,26 +167,18 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
     ]);
     
     let zNear = radius / 100;
-    let zFar = radius + 30; // radius + max(D)
-    let lightPosVector = [0.0, 8.0, 10.0]; // standard value for index and tab pages
+    let zFar = radius + 30 + 10;                // radius + max(D) + bonus
+    let lightPosVector = [0.0, 8.0, 10.0];      // standard light position
 
-    if(renderStatus == 3){
-        lightPosVector = [0, 0, -radius];
-        controls.xLight = lightPosVector[0];
-        controls.yLight = lightPosVector[1];
-        controls.zLight = lightPosVector[2];
-    }
+    // if(renderStatus == 3){
+    //     lightPosVector = [0, 0, -radius];
+    //     controls.xLight = lightPosVector[0];
+    //     controls.yLight = lightPosVector[1];
+    //     controls.zLight = lightPosVector[2];
+    // }
 
     function render(time) {
         time *= 0.001;  // convert to seconds
-
-        if(renderStatus == 2){
-            time = time * 4;
-        }
-
-        if(renderStatus == 4){
-            controls.D = 6;
-        }
 
         webglUtils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -253,21 +188,49 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
         const up = [0, 1, 0];
-        if(renderStatus == 3 | renderStatus == 4){
-            cameraPosition = [
-                (radius + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
-                (radius + controls.D) * Math.sin(controls.PHI),
-                (radius + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
-              ];
+
+        let u_world = m4.identity();
+
+        switch(renderStatus){
+            case 0:
+                break;
+            case 1:
+                if(gl == glToMove){
+                    u_world = m4.yRotation(time);
+                }
+                break;
+
+            case 2:
+                time = time * 4;
+                if(gl == glToMove){
+                    u_world = m4.yRotation(time);
+                }
+                break;
+
+            case 3:
+                cameraPosition = [
+                    (radius + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
+                    (radius + controls.D) * Math.sin(controls.PHI),
+                    (radius + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
+                  ];
+                
+                lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
+                break;
+
+            case 4:
+                cameraPosition = [
+                    (radius + controls.D) * Math.cos(controls.PHI) * Math.sin(controls.THETA),
+                    (radius + controls.D) * Math.sin(controls.PHI),
+                    (radius + controls.D) * Math.cos(controls.PHI) * Math.cos(controls.THETA),
+                  ];
+                
+                controls.D = 6;
+                lightPosVector = [10.0, 8.0, -10.0];
+                break;
         }
+        
         const camera = m4.lookAt(cameraPosition, cameraTarget, up);
         const view = m4.inverse(camera);
-
-        if(renderStatus == 3){
-            lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
-        }else if(renderStatus == 4){
-            lightPosVector = [10.0, 8.0, -10.0];
-        }
 
         const sharedUniforms = {
             u_lightDirection: m4.normalize([-1, 3, 5]),
@@ -282,15 +245,7 @@ async function main(objIndex, gl, meshProgramInfo, canvas) {
         };
 
         gl.useProgram(meshProgramInfo.program);
-
         webglUtils.setUniforms(meshProgramInfo, sharedUniforms);
-
-        let u_world;
-        if((renderStatus == 1 && gl == glToMove)||(renderStatus == 2 && gl == glToMove)){
-            u_world = m4.yRotation(time);
-        }else{
-            u_world = m4.identity();
-        }
 
         u_world = m4.translate(u_world, ...objOffset);
 

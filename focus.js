@@ -11,35 +11,8 @@ if(!gl){
 
 const meshProgramInfo = webglUtils.createProgramInfo(gl, [vs, fs]);
 
-main(index, gl, meshProgramInfo, canvas);
+main(index, gl, meshProgramInfo);
 
-setRenderStatus(3, gl)
-
-const gui = new dat.GUI();
-gui.name = "Controls";
-const dController = gui.add(controls, "D", 		    0, 		            30, 	        1);
-const thetaController = gui.add(controls, "THETA", 	    0, 	                2*Math.PI, 	    0.1);
-const phiController = gui.add(controls, "PHI", 	    -Math.PI/2+0.1,     Math.PI/2-0.1, 	0.1);
-gui.add(controls, "Ka", 	    0, 	                1, 	            0.1);
-gui.add(controls, "Kd", 	    0, 	                1, 	            0.1);
-gui.add(controls, "Ks", 	    0, 	                1, 	            0.1);
-gui.add(controls, "xLight", 	-100, 	            100, 	        1);
-gui.add(controls, "yLight", 	-100, 	            100, 	        1);
-gui.add(controls, "zLight", 	-100, 	            100, 	        1);
-
-
-function handleGuiVisibility() {
-    const guiContainer = document.getElementsByClassName("dg ac")[0];
-    const modalGui = document.getElementById("modalGui");
-    if (window.innerWidth <= 768) { // Adjust 768 to your breakpoint for mobile devices
-        guiContainer.style.display = "none"; // Hide the GUI on mobile
-        modalGui.style.display = "none"; // Show the modal button on mobile
-    } else {
-        guiContainer.style.display = ''; // Show the GUI on desktop
-        modalGui.style.display = ''; // Show the GUI on desktop
-    }
-}
-
-handleGuiVisibility()
+setRenderStatus(3, gl);
 
 loadContent(urlRes + index + ".html")
