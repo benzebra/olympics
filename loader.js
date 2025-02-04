@@ -233,7 +233,6 @@ async function main(objIndex, gl, meshProgramInfo) {
         const view = m4.inverse(camera);
 
         const sharedUniforms = {
-            u_lightDirection: m4.normalize([-1, 3, 5]),
             u_view: view,
             u_projection: projection,
             shininessAmbient: 100,

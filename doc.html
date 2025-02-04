@@ -250,6 +250,7 @@
             <p>Nella pagina di focus l'utente è più libero di muovere e orientare la camera nello spazio, così può osservare meglio gli oggetti renderizzati. In questa pagina l'utente può anche spostare la posizione della luce, così da scegliere l'illuminazione più corretta per l'oggetto nella scena.</p>
             <p>Vengono utilizzate le funzioni parseObj e parseMaterial messe a disposizione da WebGLFundamentals.</p>
             <p>Mentre per la parte di luci si fa riferimento a ciò che si è visto a lezione e alla sezione “Lighting” di WebGLFundamentals.</p>
+            <p>Nella renderizzazione della canvas vengono utilizzati degli elementi scritti in GLSL, il \texttt{vertex-shader} e il \texttt{fragment-shader}, dichiarati all'interno del file functions.js, che permettono, ripettivamente, la renderizzazione dei punti (vertici) parsati grazie alla funzione di rasing delm file \texttt{.obj} e dei colori, parsati grazie alla funzione di parsing del file \texttt{.mtl}.</p>
 
             <h3>3.1 Pipeline di Caricamento</h3>
             <p>Dagli script associati ad ogni file .html viene richiamata la funzione main dello script loader.js. Essa prende in input:</p>
