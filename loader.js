@@ -225,7 +225,7 @@ async function main(objIndex, gl, meshProgramInfo) {
                   ];
                 
                 controls.D = 6;
-                lightPosVector = [10.0, 8.0, -10.0];
+                lightPosVector = [controls.xLight, controls.yLight, controls.zLight];
                 break;
         }
         
