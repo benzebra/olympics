@@ -247,11 +247,14 @@ async function main(objIndex, gl, meshProgramInfo) {
         webglUtils.setUniforms(meshProgramInfo, sharedUniforms);
 
         u_world = m4.translate(u_world, ...objOffset);
+        let modelViewMatrix = m4.multiply(view, u_world);
+        let modelViewTranspose = m4.transpose(m4.inverse(modelViewMatrix));
 
         for (const {bufferInfo, material} of parts) {
             webglUtils.setBuffersAndAttributes(gl, meshProgramInfo, bufferInfo);
             webglUtils.setUniforms(meshProgramInfo, {
-                u_world
+                u_world,
+                u_modelViewTranspose: modelViewTranspose,
             }, material);
             webglUtils.drawBufferInfo(gl, bufferInfo);
         }
